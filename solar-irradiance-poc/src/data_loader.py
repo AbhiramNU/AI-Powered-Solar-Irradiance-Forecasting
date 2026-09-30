@@ -12,8 +12,14 @@ def load_sites():
         with open(os.path.join(DATA_DIR, "sites.json"), "r") as f:
             data = json.load(f)
             
-            # Validation
-            sites = data.get("sites", [])
+            # Validation - support both list format [...] and dict format {"sites": [...]}
+            if isinstance(data, list):
+                sites = data
+            elif isinstance(data, dict):
+                sites = data.get("sites", [])
+            else:
+                sites = []
+
             for site in sites:
                 if not all(k in site for k in ["site_id", "name", "latitude", "longitude", "climate_zone"]):
                     st.error("Validation Error: sites.json missing required fields.")
