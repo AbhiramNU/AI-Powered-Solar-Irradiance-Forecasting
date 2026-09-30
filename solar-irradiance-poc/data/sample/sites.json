@@ -1,0 +1,39 @@
+{
+  "sites": [
+    {
+      "site_id": "site_01",
+      "name": "Jodhpur",
+      "latitude": 26.2389,
+      "longitude": 73.0243,
+      "climate_zone": "Arid"
+    },
+    {
+      "site_id": "site_02",
+      "name": "Bhadla",
+      "latitude": 27.5385,
+      "longitude": 71.9161,
+      "climate_zone": "Arid"
+    },
+    {
+      "site_id": "site_03",
+      "name": "Pavagada",
+      "latitude": 14.2833,
+      "longitude": 77.2667,
+      "climate_zone": "Semi-Arid"
+    },
+    {
+      "site_id": "site_04",
+      "name": "Kurnool",
+      "latitude": 15.8281,
+      "longitude": 78.0373,
+      "climate_zone": "Tropical Savanna"
+    },
+    {
+      "site_id": "site_05",
+      "name": "Kamuthi",
+      "latitude": 9.3361,
+      "longitude": 78.3889,
+      "climate_zone": "Tropical Monsoon"
+    }
+  ]
+}

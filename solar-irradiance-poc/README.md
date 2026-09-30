@@ -1,0 +1,56 @@
+# Solar Irradiance Prediction PoC
+
+**SuryaCast: See Tomorrow's Sun.**
+AI-powered solar irradiance forecasting for the Rodic InfraAI Innovation Challenge 2026.
+
+## Problem
+Solar power generation is volatile due to weather changes. Accurate next-day forecasting helps operators balance supply. 
+
+## Final Scope
+Simulation-based PoC using public data to predict next-day hourly Global Horizontal Irradiance (GHI) across 5 Indian sites for 06:00–19:00 IST. Generates P10, P50, and P90 confidence intervals using a LightGBM quantile regression model.
+
+## Dashboard Pages
+1. **Forecast View**: Inspect P50 predictions, P10-P90 uncertainty bands, actual GHI, and raw weather model forecasts.
+2. **Accuracy Scorecard**: Understand model performance and uncertainty calibration on the 2026 test period.
+3. **Location Comparison**: Visualize model generalization across 5 distinct Indian climate zones.
+4. **Energy Estimate**: Translate irradiance predictions into actionable energy (kWh) estimates.
+5. **Data & Method**: Transparent methodology, architecture diagram, and model assumptions.
+
+## Architecture
+- Public weather forecasts (Open-Meteo) 
+- Feature engineering (Clear-sky index, solar position via `pvlib`)
+- LightGBM quantile regression (P10, P50, P90)
+- Streamlit dashboard visualization
+
+## Data Contract
+The dashboard interfaces with the ML pipeline solely through three frozen output files:
+- `sites.json`
+- `forecasts.parquet`
+- `metrics.json`
+See [docs/output_contract.md](docs/output_contract.md) for full details.
+
+## Local Setup
+
+### Sample Data Note
+**The current repository uses MOCK SAMPLE DATA solely for UI development. It is NOT the final model output.**
+When the real outputs are ready, replace the sample files in `data/sample/` with the real ones.
+
+### Installation
+```bash
+python -m venv .venv
+
+# Windows:
+.venv\Scripts\activate
+
+# Linux/Mac:
+source .venv/bin/activate
+
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+## Deployment
+The final dashboard will be deployed on Streamlit Community Cloud.
+
+## Limitations
+This PoC uses public modeled/satellite-derived data (ERA5 / NASA POWER) as ground truth rather than physical plant sensors.
