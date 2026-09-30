@@ -1,4 +1,25 @@
-.venv/
 __pycache__/
-*.pyc
+*.py[cod]
+.venv/
+venv/
 .env
+.pytest_cache/
+
+# Data
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# Models
+models/*.pkl
+models/*.joblib
+models/*.txt
+!models/.gitkeep
+
+# Notebooks
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db

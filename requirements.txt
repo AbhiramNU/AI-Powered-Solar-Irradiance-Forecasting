@@ -1,0 +1,10 @@
+pandas
+numpy
+requests
+pyarrow
+pytest
+pvlib
+lightgbm
+scikit-learn
+streamlit
+plotly
