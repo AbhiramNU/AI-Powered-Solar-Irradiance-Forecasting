@@ -15,57 +15,61 @@ st.markdown("---")
 
 with st.expander("1. Problem Statement", expanded=True):
     st.markdown("""
-    Solar power generation is inherently volatile due to cloud cover and weather changes. Accurate forecasting helps grid operators balance supply and demand. This PoC predicts the next-day hourly Global Horizontal Irradiance (GHI) across 5 Indian sites, generating P10, P50, and P90 confidence intervals.
+    Solar power generation is inherently volatile due to cloud cover and weather changes. Accurate forecasting helps grid operators balance supply and demand. This PoC predicts the **next-day hourly Global Horizontal Irradiance (GHI)** during daylight hours (**06:00–19:00 IST**) across 5 Indian sites, generating P10, P50, and P90 confidence intervals.
     """)
 
-with st.expander("2. Data Sources", expanded=True):
+with st.expander("2. Data Sources & Privacy", expanded=True):
     st.markdown("""
-    We use public, modeled, and satellite-derived data:
-    - **Open-Meteo Previous Runs API**: Day-ahead weather forecasts (Jan 2024 - Sep 2026).
-    - **Open-Meteo Historical Forecast API (GFS)**: Fallback forecast data.
-    - **Open-Meteo ERA5 Historical Weather API**: Ground truth for actual GHI.
-    - **NASA POWER**: Hourly GHI for cross-checking.
-    - **pvlib**: Solar position and clear-sky calculations.
+    We strictly use public, modeled, and satellite-derived meteorological data:
+    - **Open-Meteo APIs**: Previous Runs, Historical Forecasts (GFS fallback), and ERA5 Historical Weather for ground truth.
+    - **NASA POWER**: Supplemental hourly GHI data for cross-checking.
+    - **pvlib-python**: Open-source library for solar position and clear-sky calculations.
+    
+    *Privacy Statement*: SuryaCast operates entirely on public weather and reanalysis data. No personal user data, proprietary plant schematics, or private commercial records are ingested or stored.
     """)
 
 with st.expander("3. Training & Test Periods", expanded=True):
     st.markdown("""
-    - **Training Period**: January 2024 – December 2025
+    - **Training & Tuning Period**: January 2024 – December 2025
     - **Test Period**: January 2026 – September 2026
     
-    *Note: The model is strictly evaluated on the unseen 2026 test period.*
+    *Note: The model is strictly evaluated on the unseen 2026 test period to ensure rigorous generalization.*
     """)
 
 with st.expander("4. Model Approach", expanded=True):
     st.markdown("""
-    The model uses **LightGBM Quantile Regression** targeting the clear-sky index.
-    - **Features**: Forecast GHI, low/mid/high cloud cover, temperature, relative humidity, sun elevation, clear-sky GHI, time embeddings, and previous day's clear-sky index.
-    - **Quantiles**: P10 (0.1), P50 (0.5), and P90 (0.9).
-    - **Calibration**: Adjusted on 2025 data to target roughly 80% P10-P90 coverage.
+    The model uses an ensemble **LightGBM Quantile Regression** algorithm.
+    - **Features**: Forecast GHI, low/mid/high cloud cover, temperature, relative humidity, sun elevation, clear-sky GHI, time embeddings, and the previous day's clear-sky index.
+    - **Quantiles**: P10 (conservative 10th percentile), P50 (expected 50th percentile), and P90 (high-generation 90th percentile).
+    - **Calibration**: Adjusted to target a 75%–85% P10-P90 coverage band.
     """)
 
-with st.expander("5. Architecture Diagram", expanded=True):
+with st.expander("5. Architecture Pipeline", expanded=True):
     st.markdown("""
     ```mermaid
     graph TD
-        A[Public weather forecast] --> B[Feature engineering]
-        B --> C[Clear-sky / solar features]
-        C --> D[LightGBM quantile model]
-        D --> E[P10 / P50 / P90 Predictions]
-        E --> F[Calibration]
-        F --> G[Dashboard Visualization]
+        A[Weather & Solar Features] --> B[ML Model]
+        B --> C[P10 / P50 / P90 Quantiles]
+        C --> D[Daily Irradiation Aggregation]
+        D --> E[Dashboard Visualization]
     ```
     """)
 
 with st.expander("6. Limitations & Path to Production", expanded=True):
     st.markdown("""
     **Limitations**:
-    - The PoC uses public modeled/satellite-derived data (ERA5/NASA POWER) rather than actual plant sensor data.
+    - The PoC uses public modeled/satellite-derived data (ERA5/NASA POWER) as a proxy for ground truth, rather than actual plant sensor data.
     
     **Path to Production**:
-    - Integrating real ground-sensor pyranometer data.
-    - Exploring recurrent models or transformers for sequence data.
-    - Building a real-time ingestion pipeline.
+    - Integrating real ground-sensor pyranometer data via a live telemetry ingestion pipeline.
+    - Exploring recurrent neural networks (RNNs) or transformers to better capture temporal sequence dependencies.
+    """)
+
+with st.expander("7. Source Attribution & Licensing", expanded=True):
+    st.markdown("""
+    - **Open-Meteo**: Data provided under the CC-BY 4.0 license.
+    - **NASA POWER**: Data obtained from the NASA Langley Research Center POWER Project.
+    - **pvlib-python**: Provided under the BSD 3-Clause License.
     """)
 
 st.caption("SuryaCast - Sahasranshu Technologies Private Limited | Rodic InfraAI Innovation Challenge 2026")
