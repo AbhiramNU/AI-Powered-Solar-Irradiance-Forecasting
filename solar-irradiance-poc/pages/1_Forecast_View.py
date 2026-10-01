@@ -47,8 +47,12 @@ with col3:
     st.write("")
     st.write("")
     if st.button("☁ Explore a cloudy day"):
-        if "2026-01-05" in available_dates:
-            selected_date = "2026-01-05"
+        site_data = df[df["site_id"] == selected_site_id]
+        if not site_data.empty:
+            # A cloudy day has a large gap between clearsky and actual GHI
+            daily_diff = site_data.groupby("date").apply(lambda x: (x["ghi_clearsky"] - x["ghi_actual"]).sum(), include_groups=False)
+            cloudy_date = daily_diff.idxmax()
+            selected_date = cloudy_date
             st.session_state["cloudy_btn"] = True
             st.rerun()
 
