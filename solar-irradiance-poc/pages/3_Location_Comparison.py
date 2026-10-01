@@ -51,7 +51,7 @@ df = pd.DataFrame(data)
 col1, col2 = st.columns([1, 1])
 
 with col1:
-    st.dataframe(df.drop(columns=["Latitude", "Longitude"]), use_container_width=True, hide_index=True)
+    st.dataframe(df.drop(columns=["Latitude", "Longitude"]), width="stretch", hide_index=True)
 
 with col2:
     try:
@@ -59,7 +59,7 @@ with col2:
                                 hover_data=["Climate Zone", "MAE (W/m²)"],
                                 color="MAE (W/m²)", size_max=15, zoom=4, height=400,
                                 mapbox_style="carto-positron")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
     except Exception as e:
         st.caption("Map visualization unavailable.")
 

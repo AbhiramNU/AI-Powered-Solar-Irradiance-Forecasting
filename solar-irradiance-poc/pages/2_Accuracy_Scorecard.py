@@ -48,7 +48,7 @@ if monthly:
     rmses = [m["RMSE"] for m in monthly.values()]
     fig = go.Figure([go.Bar(x=months, y=rmses, marker_color='#d97706')])
     fig.update_layout(template="plotly_white", xaxis_title="Month", yaxis_title="RMSE (W/m²)")
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 st.markdown("### Uncertainty Calibration")
 st.markdown("The P10-P90 coverage target is roughly 80%.")
