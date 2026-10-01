@@ -37,14 +37,14 @@ for s in sites:
     site_metrics = by_site.get(site_id, {})
     ml_m = site_metrics.get("ml_model_p50", {})
     data.append({
-        "Site": s["name"],
-        "Climate Zone": s["climate_zone"],
-        "Latitude": s["latitude"],
-        "Longitude": s["longitude"],
-        "MAE (W/m²)": ml_m.get("mae", 0),
-        "RMSE (W/m²)": ml_m.get("rmse", 0),
-        "Skill vs NWP (%)": ml_m.get("skill", 0),
-        "Coverage (%)": site_metrics.get("coverage", 0)
+        "Site": str(s["name"]),
+        "Climate Zone": str(s["climate_zone"]),
+        "Latitude": float(s["latitude"]),
+        "Longitude": float(s["longitude"]),
+        "MAE (W/m²)": float(ml_m.get("mae", 0)),
+        "RMSE (W/m²)": float(ml_m.get("rmse", 0)),
+        "Skill vs NWP (%)": float(ml_m.get("skill", 0)),
+        "Coverage (%)": float(site_metrics.get("coverage", 0))
     })
 
 df = pd.DataFrame(data)

@@ -20,6 +20,11 @@ models/*.txt
 # Notebooks
 .ipynb_checkpoints/
 
+# Node
+node_modules/
+dist/
+.claude/
+
 # OS
 .DS_Store
 Thumbs.db
