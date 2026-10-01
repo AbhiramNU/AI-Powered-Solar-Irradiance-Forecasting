@@ -63,3 +63,8 @@ with col2:
         st.plotly_chart(fig, width="stretch")
     except Exception as e:
         st.caption("Map visualization unavailable.")
+st.markdown("### Monthly Error Heatmap")
+st.info("Site × Month Error Matrix: Not available in current metrics schema.")
+
+st.markdown("---")
+st.markdown("*To view detailed hourly forecasts for any of these sites, please navigate to the **01 Forecast View** page from the sidebar.*")
