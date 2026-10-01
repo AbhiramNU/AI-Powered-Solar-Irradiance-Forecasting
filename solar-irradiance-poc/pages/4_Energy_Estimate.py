@@ -27,6 +27,10 @@ if not sites or df.empty:
     st.error("Data isn't available.")
     st.stop()
 
+# Restrict to test period and daytime hours
+df = df[df["split"] == "test"]
+df = df[(df["hour_ist"] >= 6) & (df["hour_ist"] <= 19)]
+
 col1, col2, col3 = st.columns([1, 1, 1])
 
 with col1:

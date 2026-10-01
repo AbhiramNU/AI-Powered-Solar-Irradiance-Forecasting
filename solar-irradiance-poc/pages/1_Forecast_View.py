@@ -32,6 +32,10 @@ if not sites or df.empty:
     st.error("Forecast data isn't available for this selection yet.")
     st.stop()
 
+# Restrict to test period and daytime hours
+df = df[df["split"] == "test"]
+df = df[(df["hour_ist"] >= 6) & (df["hour_ist"] <= 19)]
+
 # Layout
 col1, col2, col3 = st.columns([1, 1, 1])
 
