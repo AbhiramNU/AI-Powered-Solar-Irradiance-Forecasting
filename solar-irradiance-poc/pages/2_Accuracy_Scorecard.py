@@ -44,17 +44,22 @@ c4.metric("P10-P90 Coverage", f"{coverage:.1f}%")
 
 st.markdown("### Model vs Baselines Comparison")
 comp_df = pd.DataFrame([
-    {"Model": "LightGBM Quantile (P50)", "MAE (W/m²)": ml_p50.get("mae", 0), "RMSE (W/m²)": ml_p50.get("rmse", 0), "nRMSE (%)": ml_p50.get("nrmse", 0)},
-    {"Model": "Raw Weather Forecast (NWP)", "MAE (W/m²)": raw_nwp.get("mae", 0), "RMSE (W/m²)": raw_nwp.get("rmse", 0), "nRMSE (%)": raw_nwp.get("nrmse", 0)},
-    {"Model": "Persistence Baseline", "MAE (W/m²)": pers.get("mae", 0), "RMSE (W/m²)": pers.get("rmse", 0), "nRMSE (%)": pers.get("nrmse", 0)},
+    {"Model": "LightGBM Quantile (P50)", "MAE (W/m²)": ml_p50.get("mae", 0), "RMSE (W/m²)": ml_p50.get("rmse", 0), "nRMSE (%)": ml_p50.get("nrmse", 0), "Bias": ml_p50.get("bias", 0), "Skill vs NWP (%)": ml_p50.get("skill", 0)},
+    {"Model": "Raw Weather Forecast (NWP)", "MAE (W/m²)": raw_nwp.get("mae", 0), "RMSE (W/m²)": raw_nwp.get("rmse", 0), "nRMSE (%)": raw_nwp.get("nrmse", 0), "Bias": raw_nwp.get("bias", 0), "Skill vs NWP (%)": "Baseline"},
+    {"Model": "Persistence Baseline", "MAE (W/m²)": pers.get("mae", 0), "RMSE (W/m²)": pers.get("rmse", 0), "nRMSE (%)": pers.get("nrmse", 0), "Bias": pers.get("bias", 0), "Skill vs NWP (%)": "N/A"},
 ])
+
+st.dataframe(comp_df, hide_index=True, width="stretch")
+
+st.markdown("### Monthly Performance Trend")
+st.info("Monthly performance trend: Not available in current metrics schema.")
 
 fig = go.Figure([
     go.Bar(name="MAE", x=comp_df["Model"], y=comp_df["MAE (W/m²)"], marker_color="#d97706"),
     go.Bar(name="RMSE", x=comp_df["Model"], y=comp_df["RMSE (W/m²)"], marker_color="#1f77b4"),
 ])
 fig.update_layout(barmode="group", template="plotly_white", yaxis_title="Error (W/m²)")
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, width="stretch")
 
 st.markdown("### Uncertainty Calibration Target (75% – 85%)")
 st.progress(min(1.0, coverage / 100.0))
