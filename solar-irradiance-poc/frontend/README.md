@@ -34,4 +34,14 @@ npm run build    # production build in dist/
 npm run lint
 ```
 
-The build is a static single-page app; when hosting it, configure the server to fall back to `index.html` for unknown paths so client-side routes work on reload.
+## Deploy (Vercel)
+
+`vercel.json` holds the build settings, the SPA fallback rewrite (so `/forecast` etc. survive a reload) and long-lived caching for hashed `/assets/*`.
+
+1. In Vercel: **Add New → Project**, import the GitHub repo.
+2. Set **Root Directory** to `solar-irradiance-poc/frontend` (everything else is picked up from `vercel.json`).
+3. Deploy. Pushes to the production branch redeploy automatically; other branches and PRs get preview URLs.
+
+Or from the CLI, inside this folder: `npx vercel` (preview) / `npx vercel --prod`.
+
+Vercel does not run the Python exporter — regenerate `public/data/` locally and commit it whenever pipeline outputs change.
