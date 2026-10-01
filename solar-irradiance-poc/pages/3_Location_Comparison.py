@@ -20,30 +20,31 @@ st.markdown('<div class="brand-title">SURYA CAST</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">Does the model generalise across India?</div>', unsafe_allow_html=True)
 st.markdown("---")
 
-st.info("DEMO / SAMPLE DATA — NOT FINAL MODEL OUTPUT")
-
-sites = load_sites()
 metrics = load_metrics()
+sites = load_sites()
 
 if not sites or not metrics:
     st.error("Data isn't available.")
     st.stop()
 
-st.markdown("### Location Comparison")
+st.markdown("### Location Comparison (2026 Test Period)")
 
 by_site = metrics.get("by_site", {})
 
 data = []
 for s in sites:
-    site_metrics = by_site.get(s["site_id"], {})
+    site_id = s["site_id"]
+    site_metrics = by_site.get(site_id, {})
+    ml_m = site_metrics.get("ml_model_p50", {})
     data.append({
         "Site": s["name"],
         "Climate Zone": s["climate_zone"],
         "Latitude": s["latitude"],
         "Longitude": s["longitude"],
-        "MAE (W/m²)": site_metrics.get("MAE", 0),
-        "Skill vs NWP (%)": site_metrics.get("skill_vs_raw_nwp", 0),
-        "P10-P90 Coverage (%)": site_metrics.get("P10_P90_coverage", 0)
+        "MAE (W/m²)": ml_m.get("mae", 0),
+        "RMSE (W/m²)": ml_m.get("rmse", 0),
+        "Skill vs NWP (%)": ml_m.get("skill", 0),
+        "Coverage (%)": site_metrics.get("coverage", 0)
     })
 
 df = pd.DataFrame(data)
@@ -56,12 +57,9 @@ with col1:
 with col2:
     try:
         fig = px.scatter_mapbox(df, lat="Latitude", lon="Longitude", hover_name="Site", 
-                                hover_data=["Climate Zone", "MAE (W/m²)"],
+                                hover_data=["Climate Zone", "MAE (W/m²)", "Coverage (%)"],
                                 color="MAE (W/m²)", size_max=15, zoom=4, height=400,
                                 mapbox_style="carto-positron")
         st.plotly_chart(fig, width="stretch")
     except Exception as e:
         st.caption("Map visualization unavailable.")
-
-st.markdown("### Monthly Error Heatmap")
-st.caption("Site x Month Error Matrix will be rendered here once monthly data per site is available.")

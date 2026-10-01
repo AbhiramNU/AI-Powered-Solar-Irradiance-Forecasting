@@ -1,0 +1,173 @@
+{
+  "overall": {
+    "ml_model_p50": {
+      "mae": 19.84,
+      "rmse": 53.4,
+      "nrmse": 22.87,
+      "bias": 3.9,
+      "skill": 2.74
+    },
+    "raw_nwp": {
+      "mae": 20.4,
+      "rmse": 56.97,
+      "nrmse": 24.4,
+      "bias": 2.56,
+      "skill": 31.13
+    },
+    "persistence": {
+      "mae": 29.62,
+      "rmse": 76.35,
+      "nrmse": 32.7,
+      "bias": -1.24,
+      "skill": 0.0
+    },
+    "p10_p90_coverage": 84.98,
+    "quantile_crossings": 0
+  },
+  "by_site": {
+    "JDH": {
+      "name": "Jodhpur",
+      "climate_zone": "Hot semi-arid",
+      "ml_model_p50": {
+        "mae": 14.97,
+        "rmse": 42.95,
+        "nrmse": 18.12,
+        "bias": 1.4,
+        "skill": 1.87
+      },
+      "raw_nwp": {
+        "mae": 15.26,
+        "rmse": 46.98,
+        "nrmse": 19.82,
+        "bias": 0.76,
+        "skill": 33.25
+      },
+      "persistence": {
+        "mae": 22.86,
+        "rmse": 62.78,
+        "nrmse": 26.49,
+        "bias": -0.94,
+        "skill": 0.0
+      },
+      "coverage": 86.8
+    },
+    "DEL": {
+      "name": "Delhi",
+      "climate_zone": "Composite",
+      "ml_model_p50": {
+        "mae": 23.29,
+        "rmse": 62.31,
+        "nrmse": 29.19,
+        "bias": 8.6,
+        "skill": 2.23
+      },
+      "raw_nwp": {
+        "mae": 23.82,
+        "rmse": 65.17,
+        "nrmse": 30.53,
+        "bias": 6.18,
+        "skill": 33.69
+      },
+      "persistence": {
+        "mae": 35.92,
+        "rmse": 89.9,
+        "nrmse": 42.12,
+        "bias": -0.93,
+        "skill": 0.0
+      },
+      "coverage": 87.48
+    },
+    "AMD": {
+      "name": "Ahmedabad",
+      "climate_zone": "Hot semi-arid",
+      "ml_model_p50": {
+        "mae": 17.33,
+        "rmse": 49.72,
+        "nrmse": 20.86,
+        "bias": 1.57,
+        "skill": 2.68
+      },
+      "raw_nwp": {
+        "mae": 17.8,
+        "rmse": 53.19,
+        "nrmse": 22.32,
+        "bias": -0.08,
+        "skill": 32.67
+      },
+      "persistence": {
+        "mae": 26.44,
+        "rmse": 74.34,
+        "nrmse": 31.19,
+        "bias": -0.65,
+        "skill": 0.0
+      },
+      "coverage": 80.27
+    },
+    "NAG": {
+      "name": "Nagpur",
+      "climate_zone": "Tropical wet/dry",
+      "ml_model_p50": {
+        "mae": 23.21,
+        "rmse": 59.5,
+        "nrmse": 25.79,
+        "bias": 3.22,
+        "skill": 3.72
+      },
+      "raw_nwp": {
+        "mae": 24.1,
+        "rmse": 64.55,
+        "nrmse": 27.98,
+        "bias": 0.65,
+        "skill": 25.75
+      },
+      "persistence": {
+        "mae": 32.47,
+        "rmse": 79.96,
+        "nrmse": 34.66,
+        "bias": -1.33,
+        "skill": 0.0
+      },
+      "coverage": 83.65
+    },
+    "CHE": {
+      "name": "Chennai",
+      "climate_zone": "Tropical",
+      "ml_model_p50": {
+        "mae": 20.4,
+        "rmse": 50.17,
+        "nrmse": 20.24,
+        "bias": 4.71,
+        "skill": 2.89
+      },
+      "raw_nwp": {
+        "mae": 21.01,
+        "rmse": 52.73,
+        "nrmse": 21.27,
+        "bias": 5.3,
+        "skill": 30.93
+      },
+      "persistence": {
+        "mae": 30.42,
+        "rmse": 72.12,
+        "nrmse": 29.1,
+        "bias": -2.37,
+        "skill": 0.0
+      },
+      "coverage": 86.68
+    }
+  },
+  "by_confidence": {
+    "High": {
+      "count": 9984,
+      "mae": 5.24
+    },
+    "Medium": {
+      "count": 14640,
+      "mae": 17.28
+    },
+    "Low": {
+      "count": 8136,
+      "mae": 42.36
+    }
+  }
+}

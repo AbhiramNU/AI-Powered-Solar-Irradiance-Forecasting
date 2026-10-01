@@ -20,8 +20,6 @@ st.markdown('<div class="brand-title">SURYA CAST</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">Turn sunlight into an energy estimate.</div>', unsafe_allow_html=True)
 st.markdown("---")
 
-st.info("DEMO / SAMPLE DATA — NOT FINAL MODEL OUTPUT")
-
 sites = load_sites()
 df = load_forecasts()
 

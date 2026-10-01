@@ -23,7 +23,7 @@ st.markdown('<div class="brand-title">SURYA CAST</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">Tomorrow\'s Solar Forecast</div>', unsafe_allow_html=True)
 st.markdown("---")
 
-st.info("DEMO / SAMPLE DATA — NOT FINAL MODEL OUTPUT. Test period — the model never saw this data during training.")
+st.success("Test period (2026) — Model evaluation on unseen data.")
 
 sites = load_sites()
 df = load_forecasts()

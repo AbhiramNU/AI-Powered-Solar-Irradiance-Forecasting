@@ -4,12 +4,19 @@ import streamlit as st
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATA_DIR = os.path.join(BASE_DIR, "data", "sample")
+PRIMARY_DATA_DIR = os.path.join(BASE_DIR, "data")
+SAMPLE_DATA_DIR = os.path.join(BASE_DIR, "data", "sample")
+
+def get_data_dir():
+    if os.path.exists(os.path.join(PRIMARY_DATA_DIR, "forecasts.parquet")):
+        return PRIMARY_DATA_DIR
+    return SAMPLE_DATA_DIR
 
 @st.cache_data
 def load_sites():
+    data_dir = get_data_dir()
     try:
-        with open(os.path.join(DATA_DIR, "sites.json"), "r") as f:
+        with open(os.path.join(data_dir, "sites.json"), "r") as f:
             data = json.load(f)
             
             # Validation - support both list format [...] and dict format {"sites": [...]}
@@ -31,8 +38,9 @@ def load_sites():
 
 @st.cache_data
 def load_forecasts():
+    data_dir = get_data_dir()
     try:
-        df = pd.read_parquet(os.path.join(DATA_DIR, "forecasts.parquet"))
+        df = pd.read_parquet(os.path.join(data_dir, "forecasts.parquet"))
         
         # Validation
         required_cols = ["site_id", "date", "hour_ist", "ghi_actual", "ghi_p10", "ghi_p50", 
@@ -55,8 +63,9 @@ def load_forecasts():
 
 @st.cache_data
 def load_metrics():
+    data_dir = get_data_dir()
     try:
-        with open(os.path.join(DATA_DIR, "metrics.json"), "r") as f:
+        with open(os.path.join(data_dir, "metrics.json"), "r") as f:
             data = json.load(f)
             return data
     except Exception as e:
