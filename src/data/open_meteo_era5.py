@@ -1,17 +1,19 @@
 """
 Open-Meteo ERA5 Historical Weather API module.
 
-Fetches historical ground truth Global Horizontal Irradiance (GHI) / shortwave radiation data.
+Fetches ERA5 hourly GHI (``shortwave_radiation``), the PoC's reference "actual".
 """
 
 from __future__ import annotations
 
 import logging
 from typing import Optional
+
 import pandas as pd
 import requests
 
 from src.config import DEFAULT_TIMEZONE, OPEN_METEO_ERA5_URL
+from src.data.validation import DataQualityError
 
 logger = logging.getLogger(__name__)
 
@@ -22,27 +24,24 @@ def fetch_era5_ghi(
     start_date: str,
     end_date: str,
     timezone: str = DEFAULT_TIMEZONE,
-    timeout: float = 30.0,
+    model: str = "era5",
+    timeout: float = 120.0,
     session: Optional[requests.Session] = None,
 ) -> pd.DataFrame:
     """
-    Fetch hourly GHI / shortwave radiation ground truth from Open-Meteo ERA5 Archive API.
+    Fetch hourly GHI from the Open-Meteo archive API.
 
-    Args:
-        latitude: Latitude of location.
-        longitude: Longitude of location.
-        start_date: Start date string (YYYY-MM-DD).
-        end_date: End date string (YYYY-MM-DD).
-        timezone: Target timezone string (default: Asia/Kolkata).
-        timeout: HTTP request timeout in seconds.
-        session: Optional requests.Session instance to reuse.
+    The archive's default ``best_match`` blends several reanalyses and analyses, so the
+    model is pinned (``era5`` by default) to keep the target consistent over time.
+    Values are means over the hour ending at ``time``.
 
     Returns:
-        pd.DataFrame: DataFrame containing 'time' and 'shortwave_radiation' columns.
+        DataFrame with a tz-aware ``time`` column and ``shortwave_radiation`` (W/m²).
 
     Raises:
         requests.HTTPError: If HTTP request fails.
         ValueError: If response is invalid or missing required variables.
+        DataQualityError: If the GHI series is entirely null.
     """
     params = {
         "latitude": latitude,
@@ -51,16 +50,13 @@ def fetch_era5_ghi(
         "end_date": end_date,
         "hourly": "shortwave_radiation",
         "timezone": timezone,
+        "models": model,
     }
 
     req_session = session or requests.Session()
 
     try:
-        response = req_session.get(
-            OPEN_METEO_ERA5_URL,
-            params=params,
-            timeout=timeout,
-        )
+        response = req_session.get(OPEN_METEO_ERA5_URL, params=params, timeout=timeout)
         response.raise_for_status()
     except requests.exceptions.RequestException as err:
         logger.error(f"HTTP request error fetching ERA5 data: {err}")
@@ -85,7 +81,8 @@ def fetch_era5_ghi(
 
     if df.empty:
         raise ValueError("Parsed DataFrame from ERA5 API is empty")
+    if df["shortwave_radiation"].isna().all():
+        raise DataQualityError("ERA5 API returned no GHI data for the requested period")
 
-    df["time"] = pd.to_datetime(df["time"])
-
+    df["time"] = pd.to_datetime(df["time"]).dt.tz_localize(timezone)
     return df

@@ -1,0 +1,282 @@
+[
+  {
+    "name": "ec_shortwave_radiation",
+    "source": "nwp",
+    "description": "ecmwf_ifs025 day-ahead shortwave_radiation"
+  },
+  {
+    "name": "ec_direct_radiation",
+    "source": "nwp",
+    "description": "ecmwf_ifs025 day-ahead direct_radiation"
+  },
+  {
+    "name": "ec_diffuse_radiation",
+    "source": "nwp",
+    "description": "ecmwf_ifs025 day-ahead diffuse_radiation"
+  },
+  {
+    "name": "ec_cloud_cover",
+    "source": "nwp",
+    "description": "ecmwf_ifs025 day-ahead cloud_cover"
+  },
+  {
+    "name": "ec_precipitation",
+    "source": "nwp",
+    "description": "ecmwf_ifs025 day-ahead precipitation"
+  },
+  {
+    "name": "ec_temperature_2m",
+    "source": "nwp",
+    "description": "ecmwf_ifs025 day-ahead temperature_2m"
+  },
+  {
+    "name": "ec_relative_humidity_2m",
+    "source": "nwp",
+    "description": "ecmwf_ifs025 day-ahead relative_humidity_2m"
+  },
+  {
+    "name": "ec_dew_point_2m",
+    "source": "nwp",
+    "description": "ecmwf_ifs025 day-ahead dew_point_2m"
+  },
+  {
+    "name": "ec_pressure_msl",
+    "source": "nwp",
+    "description": "ecmwf_ifs025 day-ahead pressure_msl"
+  },
+  {
+    "name": "ec_kt",
+    "source": "nwp",
+    "description": "ecmwf_ifs025 clear-sky index"
+  },
+  {
+    "name": "ec_dif_frac",
+    "source": "nwp",
+    "description": "ecmwf_ifs025 diffuse fraction"
+  },
+  {
+    "name": "gfs_shortwave_radiation",
+    "source": "nwp",
+    "description": "gfs_seamless day-ahead shortwave_radiation"
+  },
+  {
+    "name": "gfs_direct_radiation",
+    "source": "nwp",
+    "description": "gfs_seamless day-ahead direct_radiation"
+  },
+  {
+    "name": "gfs_diffuse_radiation",
+    "source": "nwp",
+    "description": "gfs_seamless day-ahead diffuse_radiation"
+  },
+  {
+    "name": "gfs_cloud_cover",
+    "source": "nwp",
+    "description": "gfs_seamless day-ahead cloud_cover"
+  },
+  {
+    "name": "gfs_precipitation",
+    "source": "nwp",
+    "description": "gfs_seamless day-ahead precipitation"
+  },
+  {
+    "name": "gfs_temperature_2m",
+    "source": "nwp",
+    "description": "gfs_seamless day-ahead temperature_2m"
+  },
+  {
+    "name": "gfs_relative_humidity_2m",
+    "source": "nwp",
+    "description": "gfs_seamless day-ahead relative_humidity_2m"
+  },
+  {
+    "name": "gfs_dew_point_2m",
+    "source": "nwp",
+    "description": "gfs_seamless day-ahead dew_point_2m"
+  },
+  {
+    "name": "gfs_cape",
+    "source": "nwp",
+    "description": "gfs_seamless day-ahead cape"
+  },
+  {
+    "name": "gfs_pressure_msl",
+    "source": "nwp",
+    "description": "gfs_seamless day-ahead pressure_msl"
+  },
+  {
+    "name": "gfs_kt",
+    "source": "nwp",
+    "description": "gfs_seamless clear-sky index"
+  },
+  {
+    "name": "gfs_dif_frac",
+    "source": "nwp",
+    "description": "gfs_seamless diffuse fraction"
+  },
+  {
+    "name": "icon_shortwave_radiation",
+    "source": "nwp",
+    "description": "icon_seamless day-ahead shortwave_radiation"
+  },
+  {
+    "name": "icon_direct_radiation",
+    "source": "nwp",
+    "description": "icon_seamless day-ahead direct_radiation"
+  },
+  {
+    "name": "icon_diffuse_radiation",
+    "source": "nwp",
+    "description": "icon_seamless day-ahead diffuse_radiation"
+  },
+  {
+    "name": "icon_cloud_cover",
+    "source": "nwp",
+    "description": "icon_seamless day-ahead cloud_cover"
+  },
+  {
+    "name": "icon_precipitation",
+    "source": "nwp",
+    "description": "icon_seamless day-ahead precipitation"
+  },
+  {
+    "name": "icon_temperature_2m",
+    "source": "nwp",
+    "description": "icon_seamless day-ahead temperature_2m"
+  },
+  {
+    "name": "icon_relative_humidity_2m",
+    "source": "nwp",
+    "description": "icon_seamless day-ahead relative_humidity_2m"
+  },
+  {
+    "name": "icon_dew_point_2m",
+    "source": "nwp",
+    "description": "icon_seamless day-ahead dew_point_2m"
+  },
+  {
+    "name": "icon_pressure_msl",
+    "source": "nwp",
+    "description": "icon_seamless day-ahead pressure_msl"
+  },
+  {
+    "name": "icon_kt",
+    "source": "nwp",
+    "description": "icon_seamless clear-sky index"
+  },
+  {
+    "name": "icon_dif_frac",
+    "source": "nwp",
+    "description": "icon_seamless diffuse fraction"
+  },
+  {
+    "name": "ec_kt_m1",
+    "source": "nwp",
+    "description": "clear-sky index 1 h earlier, same day"
+  },
+  {
+    "name": "ec_kt_p1",
+    "source": "nwp",
+    "description": "clear-sky index 1 h later, same day"
+  },
+  {
+    "name": "ec_cloud_cover_m1",
+    "source": "nwp",
+    "description": "cloud cover 1 h earlier, same day"
+  },
+  {
+    "name": "ec_cloud_cover_p1",
+    "source": "nwp",
+    "description": "cloud cover 1 h later, same day"
+  },
+  {
+    "name": "ec_kt_m2",
+    "source": "nwp",
+    "description": "clear-sky index 2 h earlier, same day"
+  },
+  {
+    "name": "ec_kt_p2",
+    "source": "nwp",
+    "description": "clear-sky index 2 h later, same day"
+  },
+  {
+    "name": "ec_cloud_cover_m2",
+    "source": "nwp",
+    "description": "cloud cover 2 h earlier, same day"
+  },
+  {
+    "name": "ec_cloud_cover_p2",
+    "source": "nwp",
+    "description": "cloud cover 2 h later, same day"
+  },
+  {
+    "name": "ec_d_kt",
+    "source": "nwp",
+    "description": "ecmwf_ifs025 daily mean clear-sky index"
+  },
+  {
+    "name": "gfs_d_kt",
+    "source": "nwp",
+    "description": "gfs_seamless daily mean clear-sky index"
+  },
+  {
+    "name": "icon_d_kt",
+    "source": "nwp",
+    "description": "icon_seamless daily mean clear-sky index"
+  },
+  {
+    "name": "ec_d_kt_std",
+    "source": "nwp",
+    "description": "primary NWP daily std of clear-sky index"
+  },
+  {
+    "name": "ec_d_cc",
+    "source": "nwp",
+    "description": "primary NWP daily mean cloud cover"
+  },
+  {
+    "name": "ec_d_precip",
+    "source": "nwp",
+    "description": "primary NWP daily precipitation"
+  },
+  {
+    "name": "kt_mean",
+    "source": "nwp",
+    "description": "mean clear-sky index across NWP models"
+  },
+  {
+    "name": "kt_spread",
+    "source": "nwp",
+    "description": "spread of clear-sky index across NWP models"
+  },
+  {
+    "name": "solar_elevation",
+    "source": "geometry",
+    "description": "solar elevation at interval midpoint"
+  },
+  {
+    "name": "ghi_clearsky",
+    "source": "geometry",
+    "description": "Ineichen clear-sky GHI, interval mean"
+  },
+  {
+    "name": "sin_doy",
+    "source": "calendar",
+    "description": "day of year (sine)"
+  },
+  {
+    "name": "cos_doy",
+    "source": "calendar",
+    "description": "day of year (cosine)"
+  },
+  {
+    "name": "hour_ist",
+    "source": "calendar",
+    "description": "local hour (interval midpoint)"
+  },
+  {
+    "name": "site_code",
+    "source": "site",
+    "description": "site index"
+  }
+]

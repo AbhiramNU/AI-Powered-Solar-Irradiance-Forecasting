@@ -1,0 +1,22 @@
+[project]
+name = "suryacast"
+version = "0.2.0"
+description = "Next-day hourly solar irradiance (GHI) forecasting PoC for five Indian sites"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "numpy>=2.5,<3",
+    "pandas>=3.0,<4",
+    "pyarrow>=25",
+    "requests>=2.34,<3",
+    "pvlib>=0.16,<0.17",
+    "lightgbm>=4.7,<5",
+    "scikit-learn>=1.9,<2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=9"]
+dashboard = ["streamlit>=1.64", "plotly>=7.1"]
+notebook = ["matplotlib>=3.11", "ipykernel>=7.4"]
+
+[tool.setuptools]
+packages = ["src", "src.data"]

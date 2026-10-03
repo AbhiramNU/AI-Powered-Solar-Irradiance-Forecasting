@@ -1,20 +1,23 @@
 """
 NASA POWER API module.
 
-Fetches hourly GHI (ALLSKY_SFC_SW_DWN) solar irradiance data as an independent cross-check.
+Fetches hourly GHI (ALLSKY_SFC_SW_DWN), used only as an independent cross-check of ERA5.
 """
 
 from __future__ import annotations
 
 import logging
 from typing import Optional
+
 import numpy as np
 import pandas as pd
 import requests
 
-from src.config import DEFAULT_TIMEZONE, NASA_POWER_URL
+from src.config import NASA_POWER_URL
 
 logger = logging.getLogger(__name__)
+
+NASA_FILL_VALUE = -999.0
 
 
 def fetch_nasa_power_ghi(
@@ -22,51 +25,39 @@ def fetch_nasa_power_ghi(
     longitude: float,
     start_date: str,
     end_date: str,
-    timezone: str = DEFAULT_TIMEZONE,
-    timeout: float = 30.0,
+    timeout: float = 120.0,
     session: Optional[requests.Session] = None,
 ) -> pd.DataFrame:
     """
-    Fetch hourly GHI (ALLSKY_SFC_SW_DWN) from NASA POWER Hourly Point API.
+    Fetch hourly GHI (ALLSKY_SFC_SW_DWN) from the NASA POWER Hourly Point API.
 
-    Args:
-        latitude: Latitude of location.
-        longitude: Longitude of location.
-        start_date: Start date string (YYYY-MM-DD).
-        end_date: End date string (YYYY-MM-DD).
-        timezone: Target timezone to convert timestamps to (default: Asia/Kolkata).
-        timeout: HTTP request timeout in seconds.
-        session: Optional requests.Session instance to reuse.
+    The API returns local solar time unless ``time-standard=UTC`` is requested, so it is
+    always requested explicitly. Dates are UTC calendar days.
 
     Returns:
-        pd.DataFrame: DataFrame containing 'time' and 'ALLSKY_SFC_SW_DWN' (or 'nasa_power_ghi').
+        DataFrame with a tz-aware UTC ``time`` column (the hour stamp as published by
+        NASA POWER) and ``ALLSKY_SFC_SW_DWN`` (Wh/m² per hour, i.e. mean W/m²). Fill
+        values (-999) become NaN.
 
     Raises:
         requests.HTTPError: If HTTP request fails.
-        ValueError: If response is invalid or missing expected parameter data.
+        ValueError: If the response is invalid, missing the parameter, or not in UTC.
     """
-    # NASA POWER API expects YYYYMMDD
-    formatted_start = start_date.replace("-", "")
-    formatted_end = end_date.replace("-", "")
-
     params = {
         "latitude": latitude,
         "longitude": longitude,
-        "start": formatted_start,
-        "end": formatted_end,
+        "start": start_date.replace("-", ""),
+        "end": end_date.replace("-", ""),
         "parameters": "ALLSKY_SFC_SW_DWN",
         "community": "RE",
         "format": "JSON",
+        "time-standard": "UTC",
     }
 
     req_session = session or requests.Session()
 
     try:
-        response = req_session.get(
-            NASA_POWER_URL,
-            params=params,
-            timeout=timeout,
-        )
+        response = req_session.get(NASA_POWER_URL, params=params, timeout=timeout)
         response.raise_for_status()
     except requests.exceptions.RequestException as err:
         logger.error(f"HTTP request error fetching NASA POWER data: {err}")
@@ -77,9 +68,12 @@ def fetch_nasa_power_ghi(
     except Exception as exc:
         raise ValueError(f"Failed to parse JSON response from NASA POWER API: {exc}") from exc
 
-    properties = payload.get("properties", {})
-    parameters = properties.get("parameter", {})
+    header = payload.get("header", {})
+    time_standard = str(header.get("time_standard", "UTC")).upper()
+    if time_standard != "UTC":
+        raise ValueError(f"NASA POWER returned time standard '{time_standard}', expected UTC")
 
+    parameters = payload.get("properties", {}).get("parameter", {})
     if "ALLSKY_SFC_SW_DWN" not in parameters:
         raise ValueError("NASA POWER API response is missing requested parameter 'ALLSKY_SFC_SW_DWN'")
 
@@ -87,33 +81,13 @@ def fetch_nasa_power_ghi(
     if not raw_series:
         raise ValueError("NASA POWER 'ALLSKY_SFC_SW_DWN' parameter series is empty")
 
-    # Timestamps in raw_series are YYYYMMDDHH in UTC
-    timestamps = []
-    values = []
-
-    for ts_str, val in raw_series.items():
-        # ts_str is e.g. '2026010500' -> YYYY-MM-DD HH:00:00 UTC
-        dt_utc = pd.to_datetime(ts_str, format="%Y%m%d%H", utc=True)
-        timestamps.append(dt_utc)
-        # Replace missing value fill value -999.0 with NaN
-        clean_val = np.nan if val in (-999.0, -999, "-999", "-999.0") else float(val)
-        values.append(clean_val)
-
+    values = pd.to_numeric(pd.Series(list(raw_series.values())), errors="coerce").astype(float)
+    values = values.mask(np.isclose(values, NASA_FILL_VALUE))
     df = pd.DataFrame({
-        "time": timestamps,
-        "ALLSKY_SFC_SW_DWN": values,
+        "time": pd.to_datetime(list(raw_series.keys()), format="%Y%m%d%H", utc=True),
+        "ALLSKY_SFC_SW_DWN": values.to_numpy(),
     })
 
-    # Convert to local timezone (Asia/Kolkata) and format time
-    if timezone:
-        df["time"] = df["time"].dt.tz_convert(timezone)
-
-    # Convert tz-aware datetime to string or localized datetime without tz for easy alignment
-    df["time"] = df["time"].dt.strftime("%Y-%m-%dT%H:%M")
-    df["time"] = pd.to_datetime(df["time"])
-
-    # Metadata attached to dataframe attrs
-    df.attrs["header"] = payload.get("header", {})
+    df.attrs["header"] = header
     df.attrs["units"] = payload.get("parameters", {}).get("ALLSKY_SFC_SW_DWN", {}).get("units", "Wh/m^2")
-
     return df

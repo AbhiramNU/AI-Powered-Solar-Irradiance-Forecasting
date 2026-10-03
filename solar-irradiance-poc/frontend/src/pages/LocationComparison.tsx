@@ -5,10 +5,10 @@ import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxi
 import 'leaflet/dist/leaflet.css'
 import ChartTooltip from '../components/ChartTooltip'
 import { Card, ErrorState, Loading, PageHeader, Swatch } from '../components/ui'
-import { fmt, formatMonth, useMetrics, useMonthly, useSites } from '../lib/data'
+import { fmt, formatMonth, signed, useMetrics, useMonthly, useSites } from '../lib/data'
 
-/* Sequential single-hue ramp (light → dark green) for error magnitude */
-const RAMP = ['#f0fdf4', '#bbf7d0', '#86efac', '#4ade80', '#16a34a', '#15803d', '#14532d']
+/* Sequential single-hue ramp (light → dark orange) for error magnitude */
+const RAMP = ['#fff7ed', '#fed7aa', '#fdba74', '#fb923c', '#ea580c', '#c2410c', '#7c2d12']
 
 function rampColor(t: number) {
   const x = Math.max(0, Math.min(1, t)) * (RAMP.length - 1)
@@ -80,7 +80,7 @@ export default function LocationComparison() {
 
   return (
     <>
-      <PageHeader eyebrow="03 · Location Comparison" title="Does the model generalise across India?" subtitle="Per-site performance across five distinct climate zones on the 2026 test period." />
+      <PageHeader eyebrow="03 · Location Comparison" title="How does performance vary across sites?" subtitle="Per-site performance on the test period: daylight hours, scored against ERA5." />
 
       <div className="stack">
         <div className="grid cols-2">
@@ -104,7 +104,7 @@ export default function LocationComparison() {
                       <td>{r.climate_zone}</td>
                       <td className="r">{fmt(r.mae, 2)}</td>
                       <td className="r">{fmt(r.rmse, 2)}</td>
-                      <td className="r">+{fmt(r.skill, 1)}%</td>
+                      <td className="r">{signed(r.skill)}%</td>
                       <td className="r">
                         <span className={`pill ${r.coverage >= 75 && r.coverage <= 85 ? 'good' : 'warn'}`}>{fmt(r.coverage, 1)}%</span>
                       </td>
@@ -139,27 +139,27 @@ export default function LocationComparison() {
           </Card>
         </div>
 
-        <Card title="ML model vs raw weather forecast, by site" subtitle="MAE in W/m² — the ML model beats the weather model at every site">
+        <Card title="ML model vs raw weather forecast, by site" subtitle={`Daylight MAE in W/m². The model has lower error than the raw forecast at ${rows.filter((r) => r.mae < r.nwpMae).length} of ${rows.length} sites (against ERA5).`}>
           <div className="legend" style={{ marginBottom: 10 }}>
             <span className="legend-item"><Swatch color="var(--series-model)" kind="box" />SuryaCast ML (P50)</span>
             <span className="legend-item"><Swatch color="var(--series-nwp)" kind="box" />Raw weather forecast</span>
-            <span className="legend-item"><Swatch color="var(--series-persistence)" kind="box" />Persistence</span>
+            <span className="legend-item"><Swatch color="var(--series-persistence)" kind="box" />Persistence (idealised)</span>
           </div>
           <div style={{ height: 300 }}>
             <ResponsiveContainer>
               <BarChart data={rows} margin={{ top: 8, right: 8, bottom: 0, left: 0 }} barGap={2} barCategoryGap="22%">
-                <CartesianGrid stroke="#eef2ef" vertical={false} />
-                <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#3d5246' }} tickLine={false} axisLine={{ stroke: '#cfdcd3' }} />
-                <YAxis tick={{ fontSize: 12, fill: '#6b7f73' }} tickLine={false} axisLine={false} width={40} />
+                <CartesianGrid stroke="#f4ece6" vertical={false} />
+                <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#523e33' }} tickLine={false} axisLine={{ stroke: '#e3d4c8' }} />
+                <YAxis tick={{ fontSize: 12, fill: '#80695c' }} tickLine={false} axisLine={false} width={40} />
                 <Tooltip
-                  cursor={{ fill: '#f0fdf4' }}
+                  cursor={{ fill: '#fff7ed' }}
                   content={
                     <ChartTooltip
                       title={(n) => n}
                       rows={[
                         { key: 'mae', label: 'SuryaCast ML', color: 'var(--series-model)', kind: 'box', unit: 'W/m²', digits: 2 },
                         { key: 'nwpMae', label: 'Raw weather forecast', color: 'var(--series-nwp)', kind: 'box', unit: 'W/m²', digits: 2 },
-                        { key: 'persMae', label: 'Persistence', color: 'var(--series-persistence)', kind: 'box', unit: 'W/m²', digits: 2 },
+                        { key: 'persMae', label: 'Persistence (idealised)', color: 'var(--series-persistence)', kind: 'box', unit: 'W/m²', digits: 2 },
                       ]}
                     />
                   }
@@ -172,7 +172,7 @@ export default function LocationComparison() {
           </div>
         </Card>
 
-        <Card title="Monthly error heatmap" subtitle="ML model MAE (W/m²) by site and month, 2026 test period. Darker cells = larger error.">
+        <Card title="Monthly error heatmap" subtitle="ML model daylight MAE (W/m²) by site and month, test period. Darker cells = larger error.">
           {monthly.error && <p className="card-sub">Site × month matrix unavailable: {monthly.error}</p>}
           {heat && (
             <div className="table-wrap">
@@ -210,7 +210,7 @@ function HeatRow({ name, values, months, min, max }: { name: string; values: (nu
             key={m}
             className="hm-cell"
             title={`${name}, ${formatMonth(m)}: ${fmt(v, 1)} W/m²`}
-            style={{ background: v == null ? '#f1f5f2' : rampColor(t), color: t > 0.55 ? '#fff' : 'var(--ink)' }}
+            style={{ background: v == null ? '#f7f1ec' : rampColor(t), color: t > 0.55 ? '#fff' : 'var(--ink)' }}
           >
             {fmt(v, 0)}
           </div>

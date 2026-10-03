@@ -5,9 +5,12 @@ import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from src.data_loader import load_sites, load_metrics
+from src.data_loader import load_sites, load_metrics, signed
 
-st.set_page_config(page_title="03 Locations | SuryaCast", layout="wide")
+LOGO = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "logo.png")
+st.set_page_config(page_icon=LOGO, page_title="03 Locations | SuryaCast", layout="wide")
+st.logo(LOGO, size="large")
+st.sidebar.caption("SuryaCast · a product of Sahasranshu Technologies")
 
 st.markdown("""
 <style>
@@ -17,54 +20,48 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="brand-title">SURYA CAST</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Does the model generalise across India?</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">How does performance vary across sites?</div>', unsafe_allow_html=True)
 st.markdown("---")
 
 metrics = load_metrics()
 sites = load_sites()
 
 if not sites or not metrics:
-    st.error("Data isn't available.")
     st.stop()
 
-st.markdown("### Location Comparison (2026 Test Period)")
+st.markdown("### Location comparison (test period, daylight hours, vs ERA5)")
 
-by_site = metrics.get("by_site", {})
-
-data = []
+rows = []
 for s in sites:
-    site_id = s["site_id"]
-    site_metrics = by_site.get(site_id, {})
-    ml_m = site_metrics.get("ml_model_p50", {})
-    data.append({
-        "Site": str(s["name"]),
-        "Climate Zone": str(s["climate_zone"]),
+    m = metrics["by_site"][s["site_id"]]
+    ci = m["skill_interval"]["vs_raw_nwp"]
+    rows.append({
+        "Site": s["name"],
+        "Climate Zone": s["climate_zone"],
         "Latitude": float(s["latitude"]),
         "Longitude": float(s["longitude"]),
-        "MAE (W/m²)": float(ml_m.get("mae", 0)),
-        "RMSE (W/m²)": float(ml_m.get("rmse", 0)),
-        "Skill vs NWP (%)": float(ml_m.get("skill", 0)),
-        "Coverage (%)": float(site_metrics.get("coverage", 0))
+        "MAE (W/m²)": m["ml_model_p50"]["mae"],
+        "Raw NWP MAE (W/m²)": m["raw_nwp"]["mae"],
+        "Skill vs NWP (%)": signed(m["ml_model_p50"]["skill"]),
+        "Skill 95% interval": f"{signed(ci['low'])} to {signed(ci['high'])}",
+        "Coverage (%)": m["coverage"],
     })
-
-df = pd.DataFrame(data)
+df = pd.DataFrame(rows)
 
 col1, col2 = st.columns([1, 1])
-
 with col1:
     st.dataframe(df.drop(columns=["Latitude", "Longitude"]), width="stretch", hide_index=True)
-
 with col2:
-    try:
-        fig = px.scatter_mapbox(df, lat="Latitude", lon="Longitude", hover_name="Site", 
-                                hover_data=["Climate Zone", "MAE (W/m²)", "Coverage (%)"],
-                                color="MAE (W/m²)", size_max=15, zoom=4, height=400,
-                                mapbox_style="carto-positron")
-        st.plotly_chart(fig, width="stretch")
-    except Exception as e:
-        st.caption("Map visualization unavailable.")
-st.markdown("### Monthly Error Heatmap")
-st.info("Site × Month Error Matrix: Not available in current metrics schema.")
+    fig = px.scatter_map(df, lat="Latitude", lon="Longitude", hover_name="Site",
+                         hover_data=["Climate Zone", "MAE (W/m²)", "Coverage (%)"],
+                         color="MAE (W/m²)", zoom=4, height=400, map_style="carto-positron")
+    st.plotly_chart(fig, width="stretch")
+
+st.markdown("### Monthly error by site")
+months = sorted(metrics["by_month"])
+heat = pd.DataFrame({m: {s["name"]: metrics["by_month"][m]["by_site"].get(s["site_id"]) for s in sites} for m in months})
+st.plotly_chart(px.imshow(heat, color_continuous_scale="Oranges", aspect="auto", labels=dict(color="Daylight MAE (W/m²)"), text_auto=".0f"),
+                width="stretch")
 
 st.markdown("---")
-st.markdown("*To view detailed hourly forecasts for any of these sites, please navigate to the **01 Forecast View** page from the sidebar.*")
+st.markdown("*To view hourly forecasts for any of these sites, open **01 Forecast View** from the sidebar.*")

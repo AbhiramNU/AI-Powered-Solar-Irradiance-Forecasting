@@ -1,0 +1,123 @@
+{
+  "features": [
+    "ec_shortwave_radiation",
+    "ec_direct_radiation",
+    "ec_diffuse_radiation",
+    "ec_cloud_cover",
+    "ec_precipitation",
+    "ec_temperature_2m",
+    "ec_relative_humidity_2m",
+    "ec_dew_point_2m",
+    "ec_pressure_msl",
+    "ec_kt",
+    "ec_dif_frac",
+    "gfs_shortwave_radiation",
+    "gfs_direct_radiation",
+    "gfs_diffuse_radiation",
+    "gfs_cloud_cover",
+    "gfs_precipitation",
+    "gfs_temperature_2m",
+    "gfs_relative_humidity_2m",
+    "gfs_dew_point_2m",
+    "gfs_cape",
+    "gfs_pressure_msl",
+    "gfs_kt",
+    "gfs_dif_frac",
+    "icon_shortwave_radiation",
+    "icon_direct_radiation",
+    "icon_diffuse_radiation",
+    "icon_cloud_cover",
+    "icon_precipitation",
+    "icon_temperature_2m",
+    "icon_relative_humidity_2m",
+    "icon_dew_point_2m",
+    "icon_pressure_msl",
+    "icon_kt",
+    "icon_dif_frac",
+    "ec_kt_m1",
+    "ec_kt_p1",
+    "ec_cloud_cover_m1",
+    "ec_cloud_cover_p1",
+    "ec_kt_m2",
+    "ec_kt_p2",
+    "ec_cloud_cover_m2",
+    "ec_cloud_cover_p2",
+    "ec_d_kt",
+    "gfs_d_kt",
+    "icon_d_kt",
+    "ec_d_kt_std",
+    "ec_d_cc",
+    "ec_d_precip",
+    "kt_mean",
+    "kt_spread",
+    "solar_elevation",
+    "ghi_clearsky",
+    "sin_doy",
+    "cos_doy",
+    "hour_ist",
+    "site_code"
+  ],
+  "quantiles": {
+    "p10": 0.1,
+    "p50": 0.5,
+    "p90": 0.9
+  },
+  "primary_prefix": "ec",
+  "primary_ghi": "ec_shortwave_radiation",
+  "blend_weight": {
+    "AMD": 1.0,
+    "CHE": 0.8,
+    "DEL": 1.0,
+    "JDH": 1.0,
+    "NAG": 1.0
+  },
+  "band_multiplier": {
+    "AMD": 1.26,
+    "CHE": 1.23,
+    "DEL": 1.45,
+    "JDH": 1.3,
+    "NAG": 1.16
+  },
+  "daily_band_multiplier": 0.61,
+  "confidence_thresholds": [
+    0.08999127933150959,
+    0.2953415197816136
+  ],
+  "trees": {
+    "p10": 732,
+    "p50": 750,
+    "p90": 662
+  },
+  "params": {
+    "learning_rate": 0.03,
+    "num_leaves": 31,
+    "min_child_samples": 150,
+    "subsample": 0.8,
+    "subsample_freq": 1,
+    "colsample_bytree": 0.5,
+    "reg_lambda": 1.0,
+    "n_estimators": 5000,
+    "random_state": 42,
+    "deterministic": true,
+    "force_row_wise": true,
+    "verbose": -1
+  },
+  "selection": {
+    "validation_mae": {
+      "AMD": 29.756,
+      "CHE": 52.942,
+      "DEL": 38.977,
+      "JDH": 30.755,
+      "NAG": 39.628
+    },
+    "validation_coverage": {
+      "AMD": 80.06,
+      "CHE": 80.1,
+      "DEL": 79.92,
+      "JDH": 80.14,
+      "NAG": 80.13
+    },
+    "validation_mae_raw_nwp": 59.07,
+    "validation_daily_coverage": 79.73
+  }
+}

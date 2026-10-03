@@ -1,11 +1,12 @@
 {
-  "date": "2026-09-30",
+  "date": "2026-10-03",
   "sites": [
     {
       "site_id": "JDH",
       "name": "Jodhpur",
       "latitude": 26.2389,
       "longitude": 73.0243,
+      "altitude_m": 231,
       "climate_zone": "Hot semi-arid"
     },
     {
@@ -13,6 +14,7 @@
       "name": "Delhi",
       "latitude": 28.6139,
       "longitude": 77.209,
+      "altitude_m": 216,
       "climate_zone": "Composite"
     },
     {
@@ -20,6 +22,7 @@
       "name": "Ahmedabad",
       "latitude": 23.0225,
       "longitude": 72.5714,
+      "altitude_m": 53,
       "climate_zone": "Hot semi-arid"
     },
     {
@@ -27,6 +30,7 @@
       "name": "Nagpur",
       "latitude": 21.1458,
       "longitude": 79.0882,
+      "altitude_m": 310,
       "climate_zone": "Tropical wet/dry"
     },
     {
@@ -34,26 +38,27 @@
       "name": "Chennai",
       "latitude": 13.0827,
       "longitude": 80.2707,
+      "altitude_m": 6,
       "climate_zone": "Tropical"
     }
   ],
   "sources": [
     {
-      "name": "Open-Meteo Previous Runs API",
-      "endpoint": "https://previous-runs-api.open-meteo.com/v1/forecast",
+      "name": "Open-Meteo Previous Runs (ecmwf_ifs025)",
       "status": "PASS",
+      "sites_passed": 5,
       "sites_tested": 5
     },
     {
-      "name": "Open-Meteo ERA5 Archive API",
-      "endpoint": "https://archive-api.open-meteo.com/v1/archive",
+      "name": "Open-Meteo ERA5 Archive (era5)",
       "status": "PASS",
+      "sites_passed": 5,
       "sites_tested": 5
     },
     {
-      "name": "NASA POWER Hourly Point API",
-      "endpoint": "https://power.larc.nasa.gov/api/temporal/hourly/point",
+      "name": "NASA POWER Hourly Point (UTC)",
       "status": "PASS",
+      "sites_passed": 5,
       "sites_tested": 5
     }
   ],
@@ -61,81 +66,33 @@
     {
       "name": "Forecast GHI",
       "raw_var": "shortwave_radiation_previous_day1",
-      "primary_source": "Open-Meteo Previous Runs",
+      "primary_source": "Open-Meteo Previous Runs (ecmwf_ifs025)",
       "available": true,
-      "first_available_date": "2016-01-01",
-      "missing_values": 0,
-      "fallback": "None required (Primary source verified)",
+      "missing_fraction": 0.0,
       "status": "PASS"
     },
     {
-      "name": "Low Cloud Cover",
-      "raw_var": "cloud_cover_low_previous_day1",
-      "primary_source": "Open-Meteo Previous Runs",
+      "name": "Total Cloud Cover",
+      "raw_var": "cloud_cover_previous_day1",
+      "primary_source": "Open-Meteo Previous Runs (ecmwf_ifs025)",
       "available": true,
-      "first_available_date": "2016-01-01",
-      "missing_values": 0,
-      "fallback": "None required (Primary source verified)",
-      "status": "PASS"
-    },
-    {
-      "name": "Mid Cloud Cover",
-      "raw_var": "cloud_cover_mid_previous_day1",
-      "primary_source": "Open-Meteo Previous Runs",
-      "available": true,
-      "first_available_date": "2016-01-01",
-      "missing_values": 0,
-      "fallback": "None required (Primary source verified)",
-      "status": "PASS"
-    },
-    {
-      "name": "High Cloud Cover",
-      "raw_var": "cloud_cover_high_previous_day1",
-      "primary_source": "Open-Meteo Previous Runs",
-      "available": true,
-      "first_available_date": "2016-01-01",
-      "missing_values": 0,
-      "fallback": "None required (Primary source verified)",
+      "missing_fraction": 0.0,
       "status": "PASS"
     },
     {
       "name": "Temperature",
       "raw_var": "temperature_2m_previous_day1",
-      "primary_source": "Open-Meteo Previous Runs",
+      "primary_source": "Open-Meteo Previous Runs (ecmwf_ifs025)",
       "available": true,
-      "first_available_date": "2016-01-01",
-      "missing_values": 0,
-      "fallback": "None required (Primary source verified)",
+      "missing_fraction": 0.0,
       "status": "PASS"
     },
     {
       "name": "Relative Humidity",
       "raw_var": "relative_humidity_2m_previous_day1",
-      "primary_source": "Open-Meteo Previous Runs",
+      "primary_source": "Open-Meteo Previous Runs (ecmwf_ifs025)",
       "available": true,
-      "first_available_date": "2016-01-01",
-      "missing_values": 0,
-      "fallback": "None required (Primary source verified)",
-      "status": "PASS"
-    },
-    {
-      "name": "ERA5 Ground Truth GHI",
-      "raw_var": "shortwave_radiation",
-      "primary_source": "Open-Meteo ERA5 Archive",
-      "available": true,
-      "first_available_date": "1940-01-01",
-      "missing_values": 0,
-      "fallback": "NASA POWER ALLSKY_SFC_SW_DWN",
-      "status": "PASS"
-    },
-    {
-      "name": "NASA POWER GHI Cross-Check",
-      "raw_var": "ALLSKY_SFC_SW_DWN",
-      "primary_source": "NASA POWER Hourly API",
-      "available": true,
-      "first_available_date": "2001-01-01",
-      "missing_values": 0,
-      "fallback": "ERA5 shortwave_radiation",
+      "missing_fraction": 0.0,
       "status": "PASS"
     }
   ],

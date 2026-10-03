@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 
-/* Types mirror docs/output_contract.md (exported by scripts/export_frontend_data.py) */
+/* Types mirror docs/output_contract.md (exported by `python -m src.pipeline publish`) */
 
 export interface Site {
   site_id: string
   name: string
   latitude: number
   longitude: number
+  altitude_m: number
   climate_zone: string
 }
 
@@ -18,25 +19,46 @@ export interface ModelMetrics {
   skill: number
 }
 
-export interface SiteMetrics {
+export interface SkillInterval {
+  low: number
+  high: number
+  level: number
+}
+
+type ModelBlock = Record<'ml_model_p50' | 'raw_nwp' | 'persistence', ModelMetrics>
+
+export interface SiteMetrics extends ModelBlock {
   name: string
   climate_zone: string
+  coverage: number
+  skill_interval: { vs_raw_nwp: SkillInterval }
+}
+
+export interface IndependentCheck {
+  reference: string
+  rows: number
   ml_model_p50: ModelMetrics
   raw_nwp: ModelMetrics
-  persistence: ModelMetrics
-  coverage: number
+  era5: ModelMetrics
 }
 
 export interface Metrics {
-  overall: {
-    ml_model_p50: ModelMetrics
-    raw_nwp: ModelMetrics
-    persistence: ModelMetrics
+  contract_version: number
+  model_version: string
+  run_id: string
+  test_period: { start: string; end: string }
+  convention: string
+  overall: ModelBlock & {
     p10_p90_coverage: number
-    quantile_crossings?: number
+    quantile_crossings: number
+    pinball: Record<string, number>
+    skill_interval: { vs_raw_nwp: SkillInterval; vs_persistence: SkillInterval }
   }
+  all_hours: ModelBlock & { p10_p90_coverage: number }
+  daily: { unit: string; ml_model_p50: ModelMetrics; raw_nwp: ModelMetrics; p10_p90_coverage: number; days: number }
   by_site: Record<string, SiteMetrics>
-  by_confidence?: Record<string, { count: number; mae: number }>
+  by_confidence: Partial<Record<'High' | 'Medium' | 'Low', { site_days: number; mae: number; coverage: number }>>
+  independent_check: IndependentCheck | null
 }
 
 export interface Monthly {
@@ -48,6 +70,15 @@ export interface Monthly {
 export type Confidence = 'High' | 'Medium' | 'Low' | null
 type Series = (number | null)[]
 
+export interface DailyTotals {
+  /** kWh/m². Daily P10/P90 are calibrated for daily totals, not sums of hourly quantiles. */
+  actual: number | null
+  p10: number
+  p50: number
+  p90: number
+  nwp: number | null
+}
+
 export interface DayForecast {
   confidence: Confidence
   actual: Series
@@ -57,6 +88,8 @@ export interface DayForecast {
   nwp: Series
   persistence: Series
   clearsky: Series
+  daylight: boolean[]
+  daily: DailyTotals
 }
 
 export interface SiteForecasts {
@@ -150,3 +183,7 @@ export const formatMonth = (ym: string) =>
   new Date(`${ym}-01T00:00:00`).toLocaleDateString('en-IN', { month: 'short' })
 
 export const hourLabel = (h: number) => `${String(h).padStart(2, '0')}:00`
+
+/** Signed number, e.g. +12.3 / −4.0 */
+export const signed = (v: number | null | undefined, digits = 1) =>
+  v == null || Number.isNaN(v) ? '—' : `${v > 0 ? '+' : v < 0 ? '−' : ''}${fmt(Math.abs(v), digits)}`

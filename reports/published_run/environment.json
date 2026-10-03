@@ -1,0 +1,15 @@
+{
+  "python": "3.12.3",
+  "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+  "packages": {
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "pyarrow": "25.0.1",
+    "pvlib": "0.16.1",
+    "lightgbm": "4.7.0",
+    "scikit-learn": "1.9.1",
+    "requests": "2.34.2"
+  },
+  "git_commit": "9b90130554e84ecab61d3683cee4e3d388202017",
+  "git_dirty": true
+}

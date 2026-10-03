@@ -11,11 +11,9 @@ data/raw/*
 data/processed/*
 !data/processed/.gitkeep
 
-# Models
-models/*.pkl
-models/*.joblib
-models/*.txt
-!models/.gitkeep
+# Pipeline runs (published results and provenance are copied to reports/ and the dashboards)
+runs/
+models/
 
 # Notebooks
 .ipynb_checkpoints/

@@ -4,16 +4,16 @@ import ChartTooltip, { type TooltipRow } from '../components/ChartTooltip'
 import { SiteDateFields } from '../components/SiteDatePicker'
 import { useSiteDate } from '../lib/useSiteDate'
 import { Banner, Card, ConfidencePill, ErrorState, Loading, PageHeader, Segmented, Stat, Swatch } from '../components/ui'
-import { cloudiestDate, fmt, formatDate, hourLabel, sum, useSites } from '../lib/data'
+import { cloudiestDate, fmt, formatDate, hourLabel, useSites } from '../lib/data'
 
 type SeriesKey = 'band' | 'p50' | 'actual' | 'nwp' | 'persistence' | 'clearsky'
 
 const SERIES: (TooltipRow & { key: SeriesKey })[] = [
   { key: 'p50', label: 'P50 forecast', color: 'var(--series-model)', kind: 'line', unit: 'W/m²' },
   { key: 'band', label: 'P10–P90 range', color: 'var(--series-band)', kind: 'box', unit: 'W/m²' },
-  { key: 'actual', label: 'Actual GHI', color: 'var(--series-actual)', kind: 'dot', unit: 'W/m²' },
-  { key: 'nwp', label: 'Raw weather forecast', color: 'var(--series-nwp)', kind: 'dashed', unit: 'W/m²' },
-  { key: 'persistence', label: 'Persistence', color: 'var(--series-persistence)', kind: 'dashed', unit: 'W/m²' },
+  { key: 'actual', label: 'Actual GHI (ERA5)', color: 'var(--series-actual)', kind: 'dot', unit: 'W/m²' },
+  { key: 'nwp', label: 'Raw weather forecast (ECMWF)', color: 'var(--series-nwp)', kind: 'dashed', unit: 'W/m²' },
+  { key: 'persistence', label: 'Persistence (idealised)', color: 'var(--series-persistence)', kind: 'dashed', unit: 'W/m²' },
   { key: 'clearsky', label: 'Clear-sky', color: '#94a3b8', kind: 'dotted', unit: 'W/m²' },
 ]
 
@@ -46,14 +46,10 @@ export default function ForecastView() {
   if (!sites.data) return <Loading />
 
   const d = sel.day
-  const totals = d && {
-    p10: sum(d.p10) / 1000,
-    p50: sum(d.p50) / 1000,
-    p90: sum(d.p90) / 1000,
-    actual: sum(d.actual) / 1000,
-  }
-  const errorPct = totals && totals.actual > 0 ? (Math.abs(totals.p50 - totals.actual) / totals.actual) * 100 : null
-  const inBand = totals && totals.actual >= totals.p10 && totals.actual <= totals.p90
+  // Calibrated daily totals (kWh/m²). Summing hourly P10/P90 would overstate the daily range.
+  const totals = d?.daily ?? null
+  const errorPct = totals && totals.actual != null && totals.actual > 0 ? (Math.abs(totals.p50 - totals.actual) / totals.actual) * 100 : null
+  const inBand = totals != null && totals.actual != null && totals.actual >= totals.p10 && totals.actual <= totals.p90
 
   const exploreCloudy = () => {
     if (!sel.forecasts.data) return
@@ -68,7 +64,7 @@ export default function ForecastView() {
     <>
       <PageHeader eyebrow="01 · Forecast View" title="Tomorrow's solar forecast" subtitle="Hourly GHI predictions with P10–P90 uncertainty, compared against actuals and the raw weather model." />
       <Banner>
-        <Swatch color="var(--green-700)" kind="dot" /> Test period (2026) — model evaluation on unseen data, daytime hours 06:00–19:00 IST.
+        <Swatch color="var(--sun-700)" kind="dot" /> Test period (2026) — model evaluation on unseen data, daytime hours 06:00–19:00 IST.
       </Banner>
 
       <div className="controls">
@@ -98,21 +94,23 @@ export default function ForecastView() {
             <Stat label="P10 (conservative)" value={fmt(totals.p10, 2)} unit="kWh/m²" />
             <Stat label="P90 (high generation)" value={fmt(totals.p90, 2)} unit="kWh/m²" />
             <Stat
-              label="Actual"
+              label="Actual (ERA5)"
               value={fmt(totals.actual, 2)}
               unit="kWh/m²"
               note={
-                <>
-                  {fmt(errorPct, 1)}% daily error · {inBand ? '✓ inside' : '✕ outside'} P10–P90
-                </>
+                totals.actual == null ? 'Not available' : (
+                  <>
+                    {fmt(errorPct, 1)}% daily error · {inBand ? '✓ inside' : '✕ outside'} P10–P90
+                  </>
+                )
               }
             />
-            <Stat label="Forecast confidence" value={<ConfidencePill level={d.confidence} />} note="From expected weather variability" />
+            <Stat label="Forecast confidence" value={<ConfidencePill level={d.confidence} />} note="From forecast cloudiness and model disagreement" />
           </div>
 
           <Card
             title="Hourly forecast"
-            subtitle={`${sel.site?.name} · ${sel.date ? formatDate(sel.date) : ''} · shaded area is the model's P10–P90 prediction range`}
+            subtitle={`${sel.site?.name} · ${sel.date ? formatDate(sel.date) : ''} · shaded area is the P10–P90 range · each value is the mean over the hour centred on its label`}
             action={
               <Segmented
                 label="View"
@@ -144,12 +142,12 @@ export default function ForecastView() {
               <div style={{ height: 380 }}>
                 <ResponsiveContainer>
                   <ComposedChart data={rows} margin={{ top: 8, right: 12, bottom: 4, left: 0 }}>
-                    <CartesianGrid stroke="#eef2ef" vertical={false} />
-                    <XAxis dataKey="hour" tickFormatter={hourLabel} tick={{ fontSize: 12, fill: '#6b7f73' }} axisLine={{ stroke: '#cfdcd3' }} tickLine={false} />
-                    <YAxis tick={{ fontSize: 12, fill: '#6b7f73' }} axisLine={false} tickLine={false} width={52}
-                      label={{ value: 'GHI (W/m²)', angle: -90, position: 'insideLeft', offset: 10, style: { fontSize: 12, fill: '#6b7f73' } }} />
+                    <CartesianGrid stroke="#f4ece6" vertical={false} />
+                    <XAxis dataKey="hour" tickFormatter={hourLabel} tick={{ fontSize: 12, fill: '#80695c' }} axisLine={{ stroke: '#e3d4c8' }} tickLine={false} />
+                    <YAxis tick={{ fontSize: 12, fill: '#80695c' }} axisLine={false} tickLine={false} width={52}
+                      label={{ value: 'GHI (W/m²)', angle: -90, position: 'insideLeft', offset: 10, style: { fontSize: 12, fill: '#80695c' } }} />
                     <Tooltip
-                      cursor={{ stroke: '#86efac', strokeWidth: 1 }}
+                      cursor={{ stroke: '#fdba74', strokeWidth: 1 }}
                       content={<ChartTooltip rows={SERIES.filter((s) => visible[s.key])} title={(h) => `${hourLabel(Number(h))} IST`} />}
                     />
                     {visible.band && <Area dataKey="band" stroke="none" fill="var(--series-band)" fillOpacity={0.7} isAnimationActive={false} />}

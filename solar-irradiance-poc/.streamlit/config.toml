@@ -1,0 +1,6 @@
+# SuryaCast theme: sunset orange brand. Green status colours are mapped to the brand orange.
+[theme]
+primaryColor = "#ea580c"
+greenColor = "#ea580c"
+greenBackgroundColor = "#fff7ed"
+greenTextColor = "#9a3412"

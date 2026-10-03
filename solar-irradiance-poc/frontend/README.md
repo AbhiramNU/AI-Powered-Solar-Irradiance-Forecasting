@@ -17,13 +17,15 @@ Site and date selections live in the URL (`?site=JDH&date=2026-07-22`), so they 
 
 ## Data
 
-The frontend reads static JSON produced from the frozen output contract (`../data/sites.json`, `forecasts.parquet`, `metrics.json` — see `../docs/output_contract.md`). Regenerate it whenever the pipeline outputs change:
+The frontend reads static JSON derived from the output contract (`../data/`, see `../docs/output_contract.md`).
+It is regenerated whenever a pipeline run is published, from the repository root:
 
 ```bash
-python ../scripts/export_frontend_data.py
+python -m src.pipeline publish
 ```
 
-This writes `public/data/` with `sites.json`, `metrics.json`, `monthly.json` (test-period monthly MAE, same all-hours convention as `metrics.json`), and `forecasts/<SITE>.json` (test-period, 06:00–19:00 IST hourly rows).
+This writes `public/data/` with `sites.json`, `metrics.json`, `monthly.json` (daylight MAE per month, from
+`metrics.json`) and `forecasts/<SITE>.json` (test period, 06:00–19:00 IST hourly values plus calibrated daily totals).
 
 ## Run
 

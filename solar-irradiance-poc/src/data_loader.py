@@ -1,73 +1,87 @@
+"""
+Loads the published output contract (see docs/output_contract.md).
+
+There is deliberately no fallback to sample data: if the pipeline has not published,
+pages show an error instead of numbers that did not come from the model.
+"""
+
 import json
-import pandas as pd
-import streamlit as st
 import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PRIMARY_DATA_DIR = os.path.join(BASE_DIR, "data")
-SAMPLE_DATA_DIR = os.path.join(BASE_DIR, "data", "sample")
+import pandas as pd
+import streamlit as st
 
-def get_data_dir():
-    if os.path.exists(os.path.join(PRIMARY_DATA_DIR, "forecasts.parquet")):
-        return PRIMARY_DATA_DIR
-    return SAMPLE_DATA_DIR
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+CONTRACT_VERSION = 2
+
+FORECAST_COLUMNS = ["site_id", "date", "hour_ist", "is_daylight", "ghi_actual", "ghi_p10", "ghi_p50", "ghi_p90",
+                    "ghi_nwp", "ghi_persistence", "ghi_clearsky", "confidence", "split"]
+DAILY_COLUMNS = ["site_id", "date", "split", "confidence", "actual_kwh_m2", "p10_kwh_m2", "p50_kwh_m2", "p90_kwh_m2",
+                 "nwp_kwh_m2", "persistence_kwh_m2", "clearsky_kwh_m2"]
+NOT_PUBLISHED = "Forecast data has not been published. Run `python -m src.pipeline publish` from the repository root."
+
+
+def _path(name):
+    return os.path.join(DATA_DIR, name)
+
 
 @st.cache_data
 def load_sites():
-    data_dir = get_data_dir()
     try:
-        with open(os.path.join(data_dir, "sites.json"), "r") as f:
-            data = json.load(f)
-            
-            # Validation - support both list format [...] and dict format {"sites": [...]}
-            if isinstance(data, list):
-                sites = data
-            elif isinstance(data, dict):
-                sites = data.get("sites", [])
-            else:
-                sites = []
-
-            for site in sites:
-                if not all(k in site for k in ["site_id", "name", "latitude", "longitude", "climate_zone"]):
-                    st.error("Validation Error: sites.json missing required fields.")
-                    return []
-            return sites
-    except Exception as e:
-        st.error(f"Error loading sites.json: {e}")
+        with open(_path("sites.json"), "r") as f:
+            sites = json.load(f)
+    except FileNotFoundError:
+        st.error(NOT_PUBLISHED)
         return []
+    if not isinstance(sites, list) or not all(
+        all(k in s for k in ("site_id", "name", "latitude", "longitude", "climate_zone")) for s in sites
+    ):
+        st.error("sites.json does not match the output contract.")
+        return []
+    return sites
+
+
+def _load_parquet(name, columns):
+    try:
+        df = pd.read_parquet(_path(name))
+    except FileNotFoundError:
+        st.error(NOT_PUBLISHED)
+        return pd.DataFrame()
+    missing = [c for c in columns if c not in df.columns]
+    if missing:
+        st.error(f"{name} is missing contract columns: {missing}")
+        return pd.DataFrame()
+    return df
+
 
 @st.cache_data
 def load_forecasts():
-    data_dir = get_data_dir()
-    try:
-        df = pd.read_parquet(os.path.join(data_dir, "forecasts.parquet"))
-        
-        # Validation
-        required_cols = ["site_id", "date", "hour_ist", "ghi_actual", "ghi_p10", "ghi_p50", 
-                         "ghi_p90", "ghi_nwp", "ghi_persistence", "ghi_clearsky", "confidence", "split"]
-        
-        missing_cols = [c for c in required_cols if c not in df.columns]
-        if missing_cols:
-            st.error(f"Validation Error: forecasts.parquet missing columns: {missing_cols}")
-            return pd.DataFrame()
-            
-        # P10 <= P50 <= P90 validation (ignoring NaNs)
-        invalid_p = df[~((df['ghi_p10'] <= df['ghi_p50']) & (df['ghi_p50'] <= df['ghi_p90'])) & df['ghi_p50'].notnull()]
-        if not invalid_p.empty:
-            st.warning("Validation Warning: Some rows violate P10 <= P50 <= P90.")
-            
-        return df
-    except Exception as e:
-        st.error(f"Error loading forecasts.parquet: {e}")
+    df = _load_parquet("forecasts.parquet", FORECAST_COLUMNS)
+    if not df.empty and ((df["ghi_p10"] > df["ghi_p50"]) | (df["ghi_p50"] > df["ghi_p90"])).any():
+        st.error("forecasts.parquet violates P10 ≤ P50 ≤ P90.")
         return pd.DataFrame()
+    return df
+
+
+@st.cache_data
+def load_daily():
+    return _load_parquet("daily_forecasts.parquet", DAILY_COLUMNS)
+
 
 @st.cache_data
 def load_metrics():
-    data_dir = get_data_dir()
     try:
-        with open(os.path.join(data_dir, "metrics.json"), "r") as f:
-            data = json.load(f)
-            return data
-    except Exception as e:
-        st.error(f"Error loading metrics.json: {e}")
+        with open(_path("metrics.json"), "r") as f:
+            metrics = json.load(f)
+    except FileNotFoundError:
+        st.error(NOT_PUBLISHED)
         return {}
+    if metrics.get("contract_version") != CONTRACT_VERSION:
+        st.error(f"metrics.json contract version {metrics.get('contract_version')} is not supported (expected {CONTRACT_VERSION}).")
+        return {}
+    return metrics
+
+
+def signed(v, digits=1):
+    return f"{v:+.{digits}f}"
