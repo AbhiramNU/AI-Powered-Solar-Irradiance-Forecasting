@@ -1,84 +1,53 @@
 # SOLAR-6 — Data Availability Report
 
-**Date:** 30 September 2026  
-**Owner:** Akshant  
-**Project:** Sahasranshu Technologies — Solar Irradiance Prediction PoC  
-**Overall Status:** `PASS`  
+**Generated:** 2026-10-03 by `python -m scripts.solar6_data_spike`  
+**Test pull:** 2026-01-05 → 2026-01-11  
+**Overall status:** `PASS`
 
----
+This report covers a one-week pull only. Coverage of the full training and test period is measured by the
+pipeline and reported in `reports/data_quality.md`.
 
 ## 1. Sites
 
-The following five representative Indian sites were finalised and validated for site uniqueness, climate zone coverage, and coordinate boundaries:
+| Site ID | Site Name | Latitude | Longitude | Altitude (m) | Climate Zone |
+|---|---|---:|---:|---:|---|
+| `JDH` | Jodhpur | 26.2389 | 73.0243 | 231 | Hot semi-arid |
+| `DEL` | Delhi | 28.6139 | 77.2090 | 216 | Composite |
+| `AMD` | Ahmedabad | 23.0225 | 72.5714 | 53 | Hot semi-arid |
+| `NAG` | Nagpur | 21.1458 | 79.0882 | 310 | Tropical wet/dry |
+| `CHE` | Chennai | 13.0827 | 80.2707 | 6 | Tropical |
 
-| Site ID | Site Name | Latitude | Longitude | Climate Zone | Status |
-|---|---|---:|---:|---|---|
-| `JDH` | Jodhpur | 26.2389 | 73.0243 | Hot semi-arid | `VERIFIED` |
-| `DEL` | Delhi | 28.6139 | 77.2090 | Composite | `VERIFIED` |
-| `AMD` | Ahmedabad | 23.0225 | 72.5714 | Hot semi-arid | `VERIFIED` |
-| `NAG` | Nagpur | 21.1458 | 79.0882 | Tropical wet/dry | `VERIFIED` |
-| `CHE` | Chennai | 13.0827 | 80.2707 | Tropical | `VERIFIED` |
+## 2. Forecast variables (test week)
 
-## 2. Required Variables
+| Variable | Source | Missing in test week | Status |
+|---|---|---:|---|
+| Forecast GHI (`shortwave_radiation_previous_day1`) | Open-Meteo Previous Runs (ecmwf_ifs025) | 0.0% | `PASS` |
+| Total Cloud Cover (`cloud_cover_previous_day1`) | Open-Meteo Previous Runs (ecmwf_ifs025) | 0.0% | `PASS` |
+| Temperature (`temperature_2m_previous_day1`) | Open-Meteo Previous Runs (ecmwf_ifs025) | 0.0% | `PASS` |
+| Relative Humidity (`relative_humidity_2m_previous_day1`) | Open-Meteo Previous Runs (ecmwf_ifs025) | 0.0% | `PASS` |
 
-All required 1-day lead time forecast variables and ground-truth solar irradiance sources were tested for availability:
+## 3. API test results
 
-| Variable | Primary Source | Available | First Available Date | Fallback Source | Status |
-|---|---|:---:|:---:|---|---|
-| Forecast GHI (`shortwave_radiation_previous_day1`) | Open-Meteo Previous Runs | YES | 2016-01-01 | None required (Primary source verified) | `PASS` |
-| Low Cloud Cover (`cloud_cover_low_previous_day1`) | Open-Meteo Previous Runs | YES | 2016-01-01 | None required (Primary source verified) | `PASS` |
-| Mid Cloud Cover (`cloud_cover_mid_previous_day1`) | Open-Meteo Previous Runs | YES | 2016-01-01 | None required (Primary source verified) | `PASS` |
-| High Cloud Cover (`cloud_cover_high_previous_day1`) | Open-Meteo Previous Runs | YES | 2016-01-01 | None required (Primary source verified) | `PASS` |
-| Temperature (`temperature_2m_previous_day1`) | Open-Meteo Previous Runs | YES | 2016-01-01 | None required (Primary source verified) | `PASS` |
-| Relative Humidity (`relative_humidity_2m_previous_day1`) | Open-Meteo Previous Runs | YES | 2016-01-01 | None required (Primary source verified) | `PASS` |
-| ERA5 Ground Truth GHI (`shortwave_radiation`) | Open-Meteo ERA5 Archive | YES | 1940-01-01 | NASA POWER ALLSKY_SFC_SW_DWN | `PASS` |
-| NASA POWER GHI Cross-Check (`ALLSKY_SFC_SW_DWN`) | NASA POWER Hourly API | YES | 2001-01-01 | ERA5 shortwave_radiation | `PASS` |
+| Source | Site | Rows | Columns | Missing values | Status |
+|---|---|---:|---:|---:|---|
+| Open-Meteo Previous Runs (ecmwf_ifs025) | Jodhpur | 168 | 5 | 0 | `PASS` |
+| Open-Meteo Previous Runs (ecmwf_ifs025) | Delhi | 168 | 5 | 0 | `PASS` |
+| Open-Meteo Previous Runs (ecmwf_ifs025) | Ahmedabad | 168 | 5 | 0 | `PASS` |
+| Open-Meteo Previous Runs (ecmwf_ifs025) | Nagpur | 168 | 5 | 0 | `PASS` |
+| Open-Meteo Previous Runs (ecmwf_ifs025) | Chennai | 168 | 5 | 0 | `PASS` |
+| Open-Meteo ERA5 Archive (era5) | Jodhpur | 168 | 2 | 0 | `PASS` |
+| Open-Meteo ERA5 Archive (era5) | Delhi | 168 | 2 | 0 | `PASS` |
+| Open-Meteo ERA5 Archive (era5) | Ahmedabad | 168 | 2 | 0 | `PASS` |
+| Open-Meteo ERA5 Archive (era5) | Nagpur | 168 | 2 | 0 | `PASS` |
+| Open-Meteo ERA5 Archive (era5) | Chennai | 168 | 2 | 0 | `PASS` |
+| NASA POWER Hourly Point (UTC) | Jodhpur | 168 | 2 | 0 | `PASS` |
+| NASA POWER Hourly Point (UTC) | Delhi | 168 | 2 | 0 | `PASS` |
+| NASA POWER Hourly Point (UTC) | Ahmedabad | 168 | 2 | 0 | `PASS` |
+| NASA POWER Hourly Point (UTC) | Nagpur | 168 | 2 | 0 | `PASS` |
+| NASA POWER Hourly Point (UTC) | Chennai | 168 | 2 | 0 | `PASS` |
 
-## 3. API Test Results
+## 4. Known limitations
 
-Test pull period: **2026-01-05** to **2026-01-11** (168 hourly timestamps per site).
+- ERA5 and NASA POWER are modelled or satellite-derived, not ground pyranometer measurements.
+- ERA5 comes from the ECMWF IFS model family, the same family as the primary forecast input.
 
-| Endpoint / Source | Site Tested | Rows | Columns | Missing Values | Status |
-|---|---|---:|---:|---|---|
-| Open-Meteo Previous Runs | Jodhpur | 168 | 7 | 0 | `PASS` |
-| Open-Meteo Previous Runs | Delhi | 168 | 7 | 0 | `PASS` |
-| Open-Meteo Previous Runs | Ahmedabad | 168 | 7 | 0 | `PASS` |
-| Open-Meteo Previous Runs | Nagpur | 168 | 7 | 0 | `PASS` |
-| Open-Meteo Previous Runs | Chennai | 168 | 7 | 0 | `PASS` |
-| Open-Meteo ERA5 Archive | Jodhpur | 168 | 2 | 0 | `PASS` |
-| Open-Meteo ERA5 Archive | Delhi | 168 | 2 | 0 | `PASS` |
-| Open-Meteo ERA5 Archive | Ahmedabad | 168 | 2 | 0 | `PASS` |
-| Open-Meteo ERA5 Archive | Nagpur | 168 | 2 | 0 | `PASS` |
-| Open-Meteo ERA5 Archive | Chennai | 168 | 2 | 0 | `PASS` |
-| NASA POWER Hourly Point | Jodhpur | 168 | 2 | 0 | `PASS` |
-| NASA POWER Hourly Point | Delhi | 168 | 2 | 0 | `PASS` |
-| NASA POWER Hourly Point | Ahmedabad | 168 | 2 | 0 | `PASS` |
-| NASA POWER Hourly Point | Nagpur | 168 | 2 | 0 | `PASS` |
-| NASA POWER Hourly Point | Chennai | 168 | 2 | 0 | `PASS` |
-
-## 4. Coverage
-
-- **Training Period (January 2024 → December 2025):** **VERIFIED**. Open-Meteo Previous Runs, ERA5, and NASA POWER all provide continuous hourly coverage across 2024 and 2025 for all 5 sites.
-- **Testing Period (January 2026 → September 2026):** **VERIFIED**. Full hourly data retrieved and validated for test pulls in 2026.
-- **First Available Dates:**
-  - Open-Meteo Previous Runs: `2016-01-01`
-  - Open-Meteo ERA5 Archive: `1940-01-01`
-  - NASA POWER Hourly: `2001-01-01`
-
-## 5. Fallback Decisions
-
-- **Previous Runs API Variables:** No variable missing from Open-Meteo Previous Runs API. If an outage occurs during full data pull in SOLAR-7/8, Open-Meteo Operational Forecast API initialized at 00:00 UTC serves as designated fallback.
-- **Ground Truth GHI:** ERA5 (`shortwave_radiation`) is designated as primary ground truth. NASA POWER (`ALLSKY_SFC_SW_DWN`) verified as independent cross-check fallback.
-
-## 6. Known Limitations
-
-> [!WARNING]
-> **Modelled / Satellite-Derived Sources Notice:**
-> ERA5 reanalysis and NASA POWER are satellite-derived and atmospheric numerical model products, NOT physical ground-station pyranometer measurements.
-> They serve as reliable proxy ground-truth targets for this PoC, but model evaluations should account for potential satellite micro-climate biases.
-
-## 7. SOLAR-6 Decision
-
-### **`PASS`**
-
-All 4 SOLAR-6 acceptance criteria have been fully satisfied with live empirical API responses and clean sample dataset generation.

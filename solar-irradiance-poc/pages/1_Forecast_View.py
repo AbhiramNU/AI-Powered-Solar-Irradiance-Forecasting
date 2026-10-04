@@ -6,9 +6,12 @@ import os
 
 # Add src to path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from src.data_loader import load_sites, load_forecasts
+from src.data_loader import load_daily, load_forecasts, load_sites
 
-st.set_page_config(page_title="01 Forecast | SuryaCast", layout="wide")
+LOGO = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "logo.png")
+st.set_page_config(page_icon=LOGO, page_title="01 Forecast | SuryaCast", layout="wide")
+st.logo(LOGO, size="large")
+st.sidebar.caption("SuryaCast · a product of Sahasranshu Technologies")
 
 st.markdown("""
 <style>
@@ -27,8 +30,9 @@ st.success("Test period (2026) — Model evaluation on unseen data.")
 
 sites = load_sites()
 df = load_forecasts()
+daily = load_daily()
 
-if not sites or df.empty:
+if not sites or df.empty or daily.empty:
     st.error("Forecast data isn't available for this selection yet.")
     st.stop()
 
@@ -72,24 +76,27 @@ if day_data.empty:
     st.warning("No data found for this selection.")
     st.stop()
 
-# Summaries
-p10_sum = day_data["ghi_p10"].sum()
-p50_sum = day_data["ghi_p50"].sum()
-p90_sum = day_data["ghi_p90"].sum()
-actual_sum = day_data["ghi_actual"].sum()
-error_pct = abs(p50_sum - actual_sum) / actual_sum * 100 if actual_sum > 0 else 0
-confidence = day_data["confidence"].iloc[0] if "confidence" in day_data.columns else "Medium"
+# Daily summary: daily P10/P90 are calibrated for daily totals (summing hourly quantiles overstates the range)
+d = daily[(daily["site_id"] == selected_site_id) & (daily["date"] == selected_date)].iloc[0]
+actual_total = d["actual_kwh_m2"]
+has_actual = pd.notna(actual_total) and actual_total > 0
 
-st.markdown("### Daily Summary")
+st.markdown("### Daily irradiation")
 c1, c2, c3, c4, c5 = st.columns(5)
-c1.metric("P50 Forecast (Expected)", f"{p50_sum:,.0f} W/m²")
-c2.metric("P10 (Conservative)", f"{p10_sum:,.0f} W/m²")
-c3.metric("P90 (High-generation)", f"{p90_sum:,.0f} W/m²")
-c4.metric("Actual", f"{actual_sum:,.0f} W/m²", f"{error_pct:.1f}% Error", delta_color="inverse")
-c5.metric("Confidence", confidence)
+c1.metric("P50 forecast (expected)", f"{d['p50_kwh_m2']:.2f} kWh/m²")
+c2.metric("P10 (conservative)", f"{d['p10_kwh_m2']:.2f} kWh/m²")
+c3.metric("P90 (high generation)", f"{d['p90_kwh_m2']:.2f} kWh/m²")
+if has_actual:
+    error_pct = abs(d["p50_kwh_m2"] - actual_total) / actual_total * 100
+    in_band = d["p10_kwh_m2"] <= actual_total <= d["p90_kwh_m2"]
+    c4.metric("Actual (ERA5)", f"{actual_total:.2f} kWh/m²",
+              f"{error_pct:.1f}% error · {'inside' if in_band else 'outside'} P10–P90", delta_color="off")
+else:
+    c4.metric("Actual (ERA5)", "n/a")
+c5.metric("Confidence", d["confidence"])
 
 st.markdown("### Hourly Forecast")
-st.caption("Shaded area represents the model's prediction range.")
+st.caption("Shaded area is the P10–P90 range. Each point is the mean over the hour centred on the label (12:00 = 11:30–12:30 IST).")
 
 fig = go.Figure()
 
@@ -116,13 +123,13 @@ fig.add_trace(go.Scatter(
 # Actual
 fig.add_trace(go.Scatter(
     x=day_data["hour_ist"], y=day_data["ghi_actual"],
-    mode='markers+lines', marker=dict(color='#1f77b4', size=6), line=dict(width=1, dash='dot'), name="Actual GHI"
+    mode='markers+lines', marker=dict(color='#1f77b4', size=6), line=dict(width=1, dash='dot'), name="Actual GHI (ERA5)"
 ))
 
 # NWP
 fig.add_trace(go.Scatter(
     x=day_data["hour_ist"], y=day_data["ghi_nwp"],
-    mode='lines', line=dict(color='#7f7f7f', width=2, dash='dash'), name="Raw Weather Forecast"
+    mode='lines', line=dict(color='#7f7f7f', width=2, dash='dash'), name="Raw weather forecast (ECMWF IFS)"
 ))
 
 fig.update_layout(

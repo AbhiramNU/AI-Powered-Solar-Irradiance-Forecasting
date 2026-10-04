@@ -4,6 +4,7 @@
     "name": "Jodhpur",
     "latitude": 26.2389,
     "longitude": 73.0243,
+    "altitude_m": 231,
     "climate_zone": "Hot semi-arid"
   },
   {
@@ -11,6 +12,7 @@
     "name": "Delhi",
     "latitude": 28.6139,
     "longitude": 77.2090,
+    "altitude_m": 216,
     "climate_zone": "Composite"
   },
   {
@@ -18,6 +20,7 @@
     "name": "Ahmedabad",
     "latitude": 23.0225,
     "longitude": 72.5714,
+    "altitude_m": 53,
     "climate_zone": "Hot semi-arid"
   },
   {
@@ -25,6 +28,7 @@
     "name": "Nagpur",
     "latitude": 21.1458,
     "longitude": 79.0882,
+    "altitude_m": 310,
     "climate_zone": "Tropical wet/dry"
   },
   {
@@ -32,6 +36,7 @@
     "name": "Chennai",
     "latitude": 13.0827,
     "longitude": 80.2707,
+    "altitude_m": 6,
     "climate_zone": "Tropical"
   }
 ]

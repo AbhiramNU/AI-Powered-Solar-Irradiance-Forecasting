@@ -5,9 +5,12 @@ import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from src.data_loader import load_sites, load_forecasts
+from src.data_loader import load_daily, load_forecasts, load_sites
 
-st.set_page_config(page_title="04 Energy | SuryaCast", layout="wide")
+LOGO = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "logo.png")
+st.set_page_config(page_icon=LOGO, page_title="04 Energy | SuryaCast", layout="wide")
+st.logo(LOGO, size="large")
+st.sidebar.caption("SuryaCast · a product of Sahasranshu Technologies")
 
 st.markdown("""
 <style>
@@ -22,8 +25,9 @@ st.markdown("---")
 
 sites = load_sites()
 df = load_forecasts()
+daily = load_daily()
 
-if not sites or df.empty:
+if not sites or df.empty or daily.empty:
     st.error("Data isn't available.")
     st.stop()
 
@@ -51,25 +55,21 @@ if day_data.empty:
     st.warning("No data found for this selection.")
     st.stop()
 
-# Simplified energy placeholder logic
-# In the future, this will use Akshant's energy.py (pvlib)
-# E_kWh = GHI * Area * Efficiency = GHI * Capacity / 1000 * performance_ratio
-performance_ratio = 0.75 
+# Simplified PV model on horizontal irradiance: P(kW) = GHI(W/m²) / 1000 × capacity(kWp) × performance ratio
+performance_ratio = st.slider("Performance ratio (%)", min_value=60, max_value=90, value=75, key="pr") / 100
 efficiency_factor = capacity_kw * performance_ratio / 1000.0
 
 energy_p10 = day_data["ghi_p10"] * efficiency_factor
 energy_p50 = day_data["ghi_p50"] * efficiency_factor
 energy_p90 = day_data["ghi_p90"] * efficiency_factor
 
-total_e_p10 = energy_p10.sum()
-total_e_p50 = energy_p50.sum()
-total_e_p90 = energy_p90.sum()
-
-st.markdown("### Estimated Daily Energy")
+# Daily energy from calibrated daily irradiation (kWh/m² × kWp × PR); summing hourly P10/P90 would overstate the range
+d = daily[(daily["site_id"] == selected_site_id) & (daily["date"] == selected_date)].iloc[0]
+st.markdown("### Estimated daily energy")
 c1, c2, c3 = st.columns(3)
-c1.metric("P10 Energy", f"{total_e_p10:,.1f} kWh")
-c2.metric("P50 Energy", f"{total_e_p50:,.1f} kWh")
-c3.metric("P90 Energy", f"{total_e_p90:,.1f} kWh")
+c1.metric("P10 energy (conservative)", f"{d['p10_kwh_m2'] * capacity_kw * performance_ratio:,.1f} kWh")
+c2.metric("P50 energy (expected)", f"{d['p50_kwh_m2'] * capacity_kw * performance_ratio:,.1f} kWh")
+c3.metric("P90 energy (high)", f"{d['p90_kwh_m2'] * capacity_kw * performance_ratio:,.1f} kWh")
 
 st.markdown("### Hourly Power Generation")
 fig = go.Figure()
@@ -101,8 +101,8 @@ st.plotly_chart(fig, width="stretch")
 
 st.markdown("### Assumptions")
 st.markdown(f"""
-- **Fixed Tilt**: Equal to latitude
-- **Orientation**: South-facing
-- **Typical Losses / Performance Ratio**: {performance_ratio*100}%
-- Note: This is a placeholder calculation. The production version will use `pvlib` calculations from `energy.py`.
+- **Irradiance**: global horizontal irradiance (GHI); no plane-of-array transposition, so tilted arrays will differ.
+- **Performance ratio**: {performance_ratio * 100:.0f}%, bundling temperature, soiling, inverter and wiring losses.
+- **Daily range**: from the calibrated daily P10/P90, not the sum of hourly P10/P90.
+- This is a simplified estimate. A production version would use `pvlib` transposition and temperature models.
 """)

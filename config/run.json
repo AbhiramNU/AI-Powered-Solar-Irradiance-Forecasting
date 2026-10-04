@@ -1,0 +1,95 @@
+{
+  "run_name": "suryacast-v2",
+  "start_date": "2024-01-01",
+  "end_date": "2026-09-30",
+  "timezone": "Asia/Kolkata",
+  "splits": {
+    "train": [
+      2024
+    ],
+    "validation": [
+      2025
+    ],
+    "test": [
+      2026
+    ]
+  },
+  "issue_time": {
+    "description": "Forecast for day D is assembled on the evening of D-1 from NWP runs made about 24 hours before each target hour (Open-Meteo `_previous_day1`). For late target hours that run may be published after the evening of D-1, so this approximates rather than exactly reproduces an evening issue time.",
+    "observations_available": false
+  },
+  "nwp": {
+    "models": {
+      "ec": "ecmwf_ifs025",
+      "gfs": "gfs_seamless",
+      "icon": "icon_seamless"
+    },
+    "primary": "ec",
+    "required_variables": [
+      "shortwave_radiation"
+    ],
+    "optional_variables": [
+      "direct_radiation",
+      "diffuse_radiation",
+      "cloud_cover",
+      "precipitation",
+      "temperature_2m",
+      "relative_humidity_2m",
+      "dew_point_2m",
+      "cape",
+      "pressure_msl"
+    ]
+  },
+  "truth": {
+    "model": "era5",
+    "note": "ERA5 is a reanalysis built with the ECMWF IFS model, the same model family as the primary NWP input. Absolute errors against ERA5 are optimistic and favour ECMWF over GFS and ICON. Open-Meteo's archive `best_match` returns the ECMWF IFS analysis for recent years rather than ERA5, so the model is pinned."
+  },
+  "daylight_clearsky_wm2": 20,
+  "clearsky_substeps_per_hour": 12,
+  "quality": {
+    "max_target_null_fraction": 0.01,
+    "max_primary_ghi_null_fraction_test": 0.01
+  },
+  "model": {
+    "quantiles": {
+      "p10": 0.1,
+      "p50": 0.5,
+      "p90": 0.9
+    },
+    "params": {
+      "learning_rate": 0.03,
+      "num_leaves": 31,
+      "min_child_samples": 150,
+      "subsample": 0.8,
+      "subsample_freq": 1,
+      "colsample_bytree": 0.5,
+      "reg_lambda": 1.0,
+      "n_estimators": 5000,
+      "random_state": 42,
+      "deterministic": true,
+      "force_row_wise": true,
+      "verbose": -1
+    },
+    "early_stopping_rounds": 200,
+    "refit_tree_scale": 1.25
+  },
+  "calibration": {
+    "coverage_target_pct": 80.0,
+    "per_site": true,
+    "blend_weight_grid": {
+      "start": 0.5,
+      "stop": 1.0,
+      "num": 11
+    },
+    "band_multiplier_grid": {
+      "start": 0.6,
+      "stop": 2.5,
+      "num": 191
+    }
+  },
+  "evaluation": {
+    "bootstrap_samples": 1000,
+    "bootstrap_seed": 7,
+    "interval_level": 0.95
+  }
+}

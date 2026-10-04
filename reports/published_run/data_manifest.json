@@ -1,0 +1,324 @@
+{
+  "files": [
+    {
+      "file": "raw/era5/AMD.parquet",
+      "source": "open-meteo-archive",
+      "model": "era5",
+      "site_id": "AMD",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [],
+      "fetched_at": "2026-10-03T14:04:03+00:00",
+      "sha256": "f9151d9173477a48a010f6c74e390135bda4225c586f59ad3a50ce0d99e30fec"
+    },
+    {
+      "file": "raw/era5/CHE.parquet",
+      "source": "open-meteo-archive",
+      "model": "era5",
+      "site_id": "CHE",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [],
+      "fetched_at": "2026-10-03T14:04:20+00:00",
+      "sha256": "8c60825455ec396432e84157af2f86a2951509834df5cc7708bf2c4be867ff9c"
+    },
+    {
+      "file": "raw/era5/DEL.parquet",
+      "source": "open-meteo-archive",
+      "model": "era5",
+      "site_id": "DEL",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [],
+      "fetched_at": "2026-10-03T14:03:54+00:00",
+      "sha256": "db3b7d47d060181512f60e9fd7a35db1eb1d476ecd82e407e9468294691157c0"
+    },
+    {
+      "file": "raw/era5/JDH.parquet",
+      "source": "open-meteo-archive",
+      "model": "era5",
+      "site_id": "JDH",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [],
+      "fetched_at": "2026-10-03T14:03:46+00:00",
+      "sha256": "59d46b0f429ce57035d0a5956b303f5f9079c11b0b924923863b60e19ccb6a9c"
+    },
+    {
+      "file": "raw/era5/NAG.parquet",
+      "source": "open-meteo-archive",
+      "model": "era5",
+      "site_id": "NAG",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [],
+      "fetched_at": "2026-10-03T14:04:11+00:00",
+      "sha256": "82acb690f4ab550e1c9dfe8c55cf53fa760a279e0e6b2f47b244e702fcaae04c"
+    },
+    {
+      "file": "raw/nasa_power/AMD.parquet",
+      "source": "nasa-power",
+      "model": "SYN1DEG",
+      "site_id": "AMD",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [],
+      "fetched_at": "2026-10-03T14:04:05+00:00",
+      "sha256": "ac1eee48ec482d8168e737a716f2a9ad12baff7a96411de5b6e34195194c0f87"
+    },
+    {
+      "file": "raw/nasa_power/CHE.parquet",
+      "source": "nasa-power",
+      "model": "SYN1DEG",
+      "site_id": "CHE",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [],
+      "fetched_at": "2026-10-03T14:04:23+00:00",
+      "sha256": "ebcd427ff9206aa092030809c732890c4cae7ea35e1d46b0106a4183c0b788f7"
+    },
+    {
+      "file": "raw/nasa_power/DEL.parquet",
+      "source": "nasa-power",
+      "model": "SYN1DEG",
+      "site_id": "DEL",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [],
+      "fetched_at": "2026-10-03T14:03:56+00:00",
+      "sha256": "7f0bd013b5ca01ec2085c57976f817b42a0a7105b9e1d764ab88c747f5227489"
+    },
+    {
+      "file": "raw/nasa_power/JDH.parquet",
+      "source": "nasa-power",
+      "model": "SYN1DEG",
+      "site_id": "JDH",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [],
+      "fetched_at": "2026-10-03T14:03:48+00:00",
+      "sha256": "c47932ec2c600150ee6a39cbd8f3282b1b1dbecced392bd2a95e45b6fafbc288"
+    },
+    {
+      "file": "raw/nasa_power/NAG.parquet",
+      "source": "nasa-power",
+      "model": "SYN1DEG",
+      "site_id": "NAG",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [],
+      "fetched_at": "2026-10-03T14:04:13+00:00",
+      "sha256": "3806fdf4e99bf9053b837d9ca76a28a50cf718614f95d1cfdd8a6f75484ad89d"
+    },
+    {
+      "file": "raw/nwp/AMD_ecmwf_ifs025.parquet",
+      "source": "open-meteo-previous-runs",
+      "model": "ecmwf_ifs025",
+      "site_id": "AMD",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [
+        "cape"
+      ],
+      "fetched_at": "2026-10-03T14:03:58+00:00",
+      "sha256": "19a9ba31e942f8e07e1c2e32a4d57add717528f0446aeb12795497209da6db40"
+    },
+    {
+      "file": "raw/nwp/AMD_gfs_seamless.parquet",
+      "source": "open-meteo-previous-runs",
+      "model": "gfs_seamless",
+      "site_id": "AMD",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [],
+      "fetched_at": "2026-10-03T14:04:00+00:00",
+      "sha256": "b56217499af5b5b52a68c5d6d64d6735a86ac488feec52f2dcf5000b4f53530d"
+    },
+    {
+      "file": "raw/nwp/AMD_icon_seamless.parquet",
+      "source": "open-meteo-previous-runs",
+      "model": "icon_seamless",
+      "site_id": "AMD",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [
+        "cape"
+      ],
+      "fetched_at": "2026-10-03T14:04:02+00:00",
+      "sha256": "591c63c3ca2f2bc9768df7666cbb3b9b03a54cc1c569f96107d8864dd26b7d2d"
+    },
+    {
+      "file": "raw/nwp/CHE_ecmwf_ifs025.parquet",
+      "source": "open-meteo-previous-runs",
+      "model": "ecmwf_ifs025",
+      "site_id": "CHE",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [
+        "cape"
+      ],
+      "fetched_at": "2026-10-03T14:04:16+00:00",
+      "sha256": "ba743764ba2eb6edaa55095541bba69ca87f759b96d968f165eab262315c76f8"
+    },
+    {
+      "file": "raw/nwp/CHE_gfs_seamless.parquet",
+      "source": "open-meteo-previous-runs",
+      "model": "gfs_seamless",
+      "site_id": "CHE",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [],
+      "fetched_at": "2026-10-03T14:04:17+00:00",
+      "sha256": "ce3837aa0a40345ff0074fea84206cd1e1a7eef3eb165398c91536898909469d"
+    },
+    {
+      "file": "raw/nwp/CHE_icon_seamless.parquet",
+      "source": "open-meteo-previous-runs",
+      "model": "icon_seamless",
+      "site_id": "CHE",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [
+        "cape"
+      ],
+      "fetched_at": "2026-10-03T14:04:19+00:00",
+      "sha256": "5c2def7304f872d4e33a454e7c341c190ca8376140d306c38e169c32eeb2729e"
+    },
+    {
+      "file": "raw/nwp/DEL_ecmwf_ifs025.parquet",
+      "source": "open-meteo-previous-runs",
+      "model": "ecmwf_ifs025",
+      "site_id": "DEL",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [
+        "cape"
+      ],
+      "fetched_at": "2026-10-03T14:03:49+00:00",
+      "sha256": "2b94d4aa417f7fb400252612d68e951a188a4393cbb5046511d2e7e11c22a82a"
+    },
+    {
+      "file": "raw/nwp/DEL_gfs_seamless.parquet",
+      "source": "open-meteo-previous-runs",
+      "model": "gfs_seamless",
+      "site_id": "DEL",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [],
+      "fetched_at": "2026-10-03T14:03:51+00:00",
+      "sha256": "a083fbe7f6e6988afb39856fd50e3f152bb503d4f5a692e0a9bdf2e8217f815a"
+    },
+    {
+      "file": "raw/nwp/DEL_icon_seamless.parquet",
+      "source": "open-meteo-previous-runs",
+      "model": "icon_seamless",
+      "site_id": "DEL",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [
+        "cape"
+      ],
+      "fetched_at": "2026-10-03T14:03:53+00:00",
+      "sha256": "6815a4b8f59c63a1a75c128dd06b23e852820bd910f5db45b4545248dfa112fb"
+    },
+    {
+      "file": "raw/nwp/JDH_ecmwf_ifs025.parquet",
+      "source": "open-meteo-previous-runs",
+      "model": "ecmwf_ifs025",
+      "site_id": "JDH",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [
+        "cape"
+      ],
+      "fetched_at": "2026-10-03T14:03:40+00:00",
+      "sha256": "6479ddfe56398927ae61c9220d364e9b2e6f7aa5b0d1f60ea336b956bacfc8e3"
+    },
+    {
+      "file": "raw/nwp/JDH_gfs_seamless.parquet",
+      "source": "open-meteo-previous-runs",
+      "model": "gfs_seamless",
+      "site_id": "JDH",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [],
+      "fetched_at": "2026-10-03T14:03:42+00:00",
+      "sha256": "fc768fc7a91d0ad3eef766af37bab8213b2546ff649fc07c3d0f0beb35202c5f"
+    },
+    {
+      "file": "raw/nwp/JDH_icon_seamless.parquet",
+      "source": "open-meteo-previous-runs",
+      "model": "icon_seamless",
+      "site_id": "JDH",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [
+        "cape"
+      ],
+      "fetched_at": "2026-10-03T14:03:45+00:00",
+      "sha256": "1cf9e4de75d9a716ee25cc00ab281ff0e463ba9761a8fcd586445d5f6be5f4e8"
+    },
+    {
+      "file": "raw/nwp/NAG_ecmwf_ifs025.parquet",
+      "source": "open-meteo-previous-runs",
+      "model": "ecmwf_ifs025",
+      "site_id": "NAG",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [
+        "cape"
+      ],
+      "fetched_at": "2026-10-03T14:04:07+00:00",
+      "sha256": "4b23552d55924582bc2e6097c9be0a05de91a1acdca049c9ce59b583deca571f"
+    },
+    {
+      "file": "raw/nwp/NAG_gfs_seamless.parquet",
+      "source": "open-meteo-previous-runs",
+      "model": "gfs_seamless",
+      "site_id": "NAG",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [],
+      "fetched_at": "2026-10-03T14:04:08+00:00",
+      "sha256": "2b9680eb234a36d8305562e79b43180ba47ad2ec900ebeabd08e612c5ad393f2"
+    },
+    {
+      "file": "raw/nwp/NAG_icon_seamless.parquet",
+      "source": "open-meteo-previous-runs",
+      "model": "icon_seamless",
+      "site_id": "NAG",
+      "rows": 24120,
+      "time_min": "2023-12-31 00:00:00+00:00",
+      "time_max": "2026-09-30 23:00:00+00:00",
+      "dropped_all_null_variables": [
+        "cape"
+      ],
+      "fetched_at": "2026-10-03T14:04:10+00:00",
+      "sha256": "f11a560b6f780d8fcacf15ce26c727a9e23d533ef7f1dd701a31b532c4f5b306"
+    }
+  ]
+}
